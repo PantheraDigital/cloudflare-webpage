@@ -1,0 +1,17 @@
+{
+  "name": "cloudflare-webpage",
+  "main": "./scripts/index.js",
+  "compatibility_date": "2026-06-30",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "."
+  },
+  "services": [
+    {
+      "binding": "GET_GITHUB_JSON",
+      "service": "gather-github-json"
+    }
+  ]
+}

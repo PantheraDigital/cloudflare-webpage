@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Panthera</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Panthera">
+    <meta name="description" content="Resume website for Panthera. View their projects, posts and contact info here."><!--description used in search result of page-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!--describes how the layout and content adapts to the mobile viewport-->
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Panthera">
+    <meta property="og:description" content="Resume website for Panthera. View their projects, posts and contact info here.">
+    <meta property="og:image" content="https://pantheradigital.github.io/project-imgs/PantheraDigital_PageScreenshot.webp">
+    <meta property="og:image:alt" content="An image preview of the website depicting the name Panthera above three buttons labled about, projects, and links. Next to this is a circle with pink at the top gradually becoming blue before the bottom allong with the image of four scratch marks over the circle.">
+    <meta property="og:url" content="https://pantheradigital.github.io/">
+    
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="logo/style.css" />
+</head>
+
+<body>
+    <template id="project-template">
+        <details class="project-details">
+            <summary>
+                Title
+            </summary>
+            <div class="project-body">
+                <img src="" alt="" loading="lazy"><br>
+                <a href="" aria-label="Project Link"></a>
+                <p name="tags">tags: </p>
+            </div>
+        </details>
+    </template>
+    <template id="tag-selector-template">
+        <div style="text-align: right; margin: 0 5px; padding: 13px 0; border-top: 2px solid grey; border-image: linear-gradient(270deg, grey, transparent 90%) 1;">
+            <fieldset style="border: none; min-width: 100%; min-inline-size: 100%; box-sizing: border-box;">
+                <legend style="display: inline-block; width: 100%;"><b>sort</b></legend>
+                <span style="display: inline-block; width: 100%; overflow-x: auto; padding-bottom: 10px;">
+                    <label for="projectNone"><input type="radio" id="projectNone" name="project-sort" value="None" /><span>None</span></label>
+                </span>
+            </fieldset>
+        </div>
+    </template>
+
+    <span id="bg-layer">
+        <span class="crt3"
+        style="position: absolute; width: 100%; height: 200%; top: 0; isolation: isolate; overflow: hidden;">
+            <span
+            style="position: absolute; width: 100%; height: 50%; top: 0;"
+            class="gradient-bg">
+            </span>
+            <span
+            style="position: absolute; width: 100%; height: 50%; top: 0;"
+            class="arch-bg">
+            </span>
+            <span 
+            class="gradient-bg-lower"
+            style="position: absolute; width: 100%; height: 50%; top: 50%;">
+            </span>
+            <span class="noise" style="position: absolute; inset: 0;"></span>
+            <span class="cloud main-cloud"></span>
+        </span>
+        <label class="display-toggle-lable" for="display-mode-toggle">
+            <input type="checkbox" id="display-mode-toggle" class="display-toggle"
+            style="position: absolute; height: 50px; width: 50px; margin: 0;" />
+        </label>
+    </span>
+    <span style="pointer-events: none; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <span class="logo-wrapper" >
+            <img class="logo-img" src="logo/logo.webp" alt="Panthera's logo depicting a tiger scull over a neon sunset." loading="lazy">
+            <span class="logo-shape-wrapper">
+                <span class="logo-shape"></span>
+            </span>
+        </span>
+    </span>
+
+    <div style="width: 100%; height: 200%;">
+        <div style="width: 100%; height: 85vh; height: 85dvh;"></div>
+        <nav style="z-index: 1; position: sticky; top: 0; text-align: center; padding-top: 4vh;">
+            <a href="#main" class="nav-button" onclick="navigateToSlide(0)">Projects</a>
+            <a href="#main" class="nav-button" onclick="navigateToSlide(1)">Posts</a>
+            <a href="#main" class="nav-button" onclick="navigateToSlide(2)">About</a>
+        </nav>
+    </div>
+
+    <main id="main" style="position: relative; top: -100%; width: 100%; height: 100%; overflow: hidden;">        
+        <div id="slide-list" class="slide-list">
+
+            <div id="projects"
+            class="slide-element"
+            style="display:inline-flex; justify-content: center; position: absolute; width: 100%; height: 100%; left: 0px;">
+                <div class="main-block">
+                    <section class="main-content">
+                        <h2 style="margin-bottom: 0;">Projects</h2>
+                        <div id="projects-container" style="margin-left: 5px; flex-grow: 1;">
+                        </div>
+                        <div id="project-loading" style="position: absolute; inset: 0; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <span class="auto-scroll-container" data-scroll-step="-1" data-scroll-update="50" style="display: inline-block; width: 100%;">
+                                <span class="auto-scroll-content" style="color:orange; text-shadow: black 1px 1px; display: inline-block; height: 2rem; line-height: 2rem; vertical-align: middle; font-family: 'Lucida Console', monospace;">
+                                    <span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span></span>
+                            </span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+            <div id="posts"
+            class="slide-element"
+            style="display: inline-flex; justify-content: center; position: absolute; width: 100%; height: 100%; left: 0px;">
+                <div class="main-block">
+                    <section class="main-content">
+                        <h2 style="margin-bottom: 0;">Posts</h2>
+                        <div id="posts-container" style="margin-left: 5px; flex-grow: 1;"></div>
+                        <div id="post-loading" style="position: absolute; inset: 0; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                            <span class="auto-scroll-container" data-scroll-step="-1" data-scroll-update="50" style="display: inline-block; width: 100%;">
+                                <span class="auto-scroll-content" style="color:orange; text-shadow: black 1px 1px; display: inline-block; height: 2rem; line-height: 2rem; vertical-align: middle; font-family: 'Lucida Console', monospace;">
+                                    <span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>//////////////</span><span 
+                                    style="display: inline-block; width: 3ch;"></span><span>LOADING</span><span 
+                                    style="display: inline-block; width: 3ch;"></span></span>
+                            </span>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        
+            <div id="about"
+            class="slide-element"
+            style="display: inline-flex; justify-content: center; position: absolute; width: 100%; height: 100%; left: 0px;">
+                <div class="main-block">
+                    <section class="main-content" style="display: flex; flex-direction: column;">
+                        <h2>About</h2>
+                        <div style="flex: 1 1 100%; display: flex; flex-flow: row wrap; ">
+                            <div style="width: 100%; height: 70%; min-height: fit-content; box-sizing: border-box; padding: 5px; white-space: normal; word-break:normal;">
+                                <p style="margin-top: 0;">
+                                    Programming is full of problems to solve and challenges to beat, that's why I do it.
+                                    <br><br>
+                                    Quick facts about me:
+                                </p>
+                                <ul class="text-list">
+                                    <li>
+                                        I started programming in 2016.
+                                    </li>
+                                    <li>
+                                        I like to collect certifications when I can.
+                                    </li>
+                                    <li>
+                                        I enjoy exploring different domains of programming to learn.
+                                    </li>
+                                    <li>
+                                        I use Linux.
+                                    </li>
+                                </ul>
+                                <p>
+                                    Video games got me into programming and now game development is my biggest hobby. It provides a creative outlet and source of learning. My focus has become developing character related systems (systems for any object that may be controlled by a player or ai during gameplay). Characters are just complex user interfaces to virtual worlds, and getting something complex to work is fun.
+                                </p>
+                            </div>
+                            <div style="width: 50%; height: 30%; box-sizing: border-box; padding: 5px;
+                                border: none; border-top: 2px solid grey; border-left: 2px solid black;
+                                border-image: linear-gradient(to bottom left, grey, transparent 50%) 1;">
+                                <h3 style="font-size: medium; margin-top: 0; margin-left: 0;">contact</h3>
+                                <a href="mailto:pantheradigitalonline@gmail.com">pantheradigitalonline@gmail.com</a>
+                                <ul class="text-list">
+                                    <li><a href="https://github.com/PantheraDigital" target="_blank">GitHub</a></li>
+                                    <li><a href="https://codepen.io/PantheraDigital" target="_blank">CodePen.io</a></li>
+                                    <li><a href="https://pantheradigital.itch.io/" target="_blank">Itch.io</a></li>
+                                    <li><a href="https://www.fab.com/sellers/PantheraDigital" target="_blank">Fab</a></li>
+                                </ul>
+                            </div>
+                            <div style="width: 50%; height: 30%; box-sizing: border-box; padding: 5px;
+                                border: none; border-top: 2px solid grey; border-left: 2px solid black;
+                                border-image: linear-gradient(to bottom right, grey, transparent 50%) 1;
+                                display: flex; flex-direction: column;">
+                                <h3 style="font-size: medium; margin-top: 0; margin-left: 0;">certs</h3>
+                                <ul style="flex: 1 1 100%; display: inline-flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0; margin: 0;">
+                                    <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
+                                        <img style="height: 130px;" src="certs/PI.webp" alt="Python Institute Certification for proficiency in the Python programming language. Exam Code PCEP 30 02." loading="lazy">
+                                    </li>
+                                    <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
+                                        <img style="height: 130px;" src="certs/JSaDS.webp" alt="Free Code Camp Certification for JavaScript algorithms and data structures." loading="lazy">
+                                    </li>
+                                    <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
+                                        <img style="height: 130px;" src="certs/CS.webp" alt="Free Code Camp Certification for foundational C-Sharp with Microsoft." loading="lazy">
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        
+        </div>    
+    </main>
+
+
+    <svg id="filters">
+        <filter id='noiseFilter'>
+            <feturbulence id="turbulence" 
+            type='fractalNoise' baseFrequency='0.0025' numOctaves='4' seed="1" />
+        </filter>
+
+        <filter id="cloud-filter">
+            <feturbulence type="fractalNoise" baseFrequency=".0165" numOctaves="4" seed="13" />
+            <fedisplacementmap in="SourceGraphic" scale="120" />
+        </filter>
+    </svg>
+
+    <script src="scripts/backend.js"></script>
+    <script src="scripts/frontend.js"></script>
+</body>
+
+</html>
