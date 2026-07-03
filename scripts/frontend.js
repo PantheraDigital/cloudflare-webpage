@@ -194,7 +194,7 @@ function sortEntriesByIndex(a,b){
     return aOIndex - bOIndex;
 }
 
-
+/*
 async function initPage() {
     const pageJSON = await loadAllData(); // data from backend
     JSONToDOM(pageJSON.projects, document.querySelector('#projects-container'), "projects");
@@ -204,6 +204,7 @@ async function initPage() {
     document.getElementById("post-loading").remove();
 }
 initPage();
+*/
 
 /*const githubValue = await response.json();
 
