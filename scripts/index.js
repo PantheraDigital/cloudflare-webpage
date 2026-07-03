@@ -10,11 +10,9 @@ export default class extends WorkerEntrypoint {
 
         const githubValue = await response.json();
         
-        return this.env.ASSETS.fetch(request);
-
     } catch (error) {
         console.error("Failed to load GitHub data:", error.message);
     }
   }
-  
+  return this.env.ASSETS.fetch(request);
 }
