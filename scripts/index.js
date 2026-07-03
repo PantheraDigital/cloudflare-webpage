@@ -15,6 +15,6 @@ export default class extends WorkerEntrypoint {
     } catch (error) {
         console.error("Failed to load GitHub data:", error.message);
     }
-  },
+  }
   
-};
+}
