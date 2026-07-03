@@ -12,7 +12,7 @@ export default {
         console.error("Failed to load GitHub data:", error.message);
     }
     */
-    return this.env.ASSETS.fetch(request);
+    return env.ASSETS.fetch(request);
   }
   
 }
