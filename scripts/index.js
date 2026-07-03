@@ -1,6 +1,4 @@
-import { WorkerEntrypoint } from "cloudflare:workers";
-
-export default class extends WorkerEntrypoint {
+export default {
 
   async fetch(request, env) {
     /*
