@@ -6,6 +6,7 @@ export default {
         if (!response.ok) { throw new Error(`Worker responded with status: ${response.status}`); }
 
         const githubValue = await response.json();
+        console.log(githubValue);
         
     } catch (error) {
         console.error("Failed to load GitHub data:", error.message);
