@@ -8,12 +8,7 @@ export default {
 
         const githubValue = await response.json();
         
-        return new Response(JSON.stringify(githubValue, null, 2), {
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*", 
-            },
-        });
+        return env.ASSETS.fetch(request);
 
     } catch (error) {
         console.error("Failed to load GitHub data:", error.message);
