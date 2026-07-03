@@ -1,4 +1,6 @@
-export default {
+import { WorkerEntrypoint } from "cloudflare:workers";
+
+export default class extends WorkerEntrypoint {
 
   async fetch(request, env) {
     console.log(request);
@@ -8,7 +10,7 @@ export default {
 
         const githubValue = await response.json();
         
-        return env.ASSETS.fetch(request);
+        return this.env.ASSETS.fetch(request);
 
     } catch (error) {
         console.error("Failed to load GitHub data:", error.message);
