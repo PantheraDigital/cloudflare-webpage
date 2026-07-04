@@ -21,7 +21,7 @@ export default {
             
             htmlText = htmlText.replace("GITHUB_DATA_PLACEHOLDER", (githubValue) ? JSON.stringify(githubValue) : "{}");
             return new Response(htmlText, {
-                headers: { "content-type": "application/javascript;charset=UTF-8" }
+                headers: { "content-type": "text/html;charset=UTF-8" }
             });
         } catch (error) {
             console.error("Data injection failed, serving original file:", error.message);
