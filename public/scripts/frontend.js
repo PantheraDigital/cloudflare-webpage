@@ -194,9 +194,30 @@ function sortEntriesByIndex(a,b){
     return aOIndex - bOIndex;
 }
 
-/*
+
 async function initPage() {
-    const pageJSON = await loadAllData(); // data from backend
+    const pageJSON = window.githubData; // data from backend
+
+    // parse entry descriptions from MD to HTML
+    for (const categoryKey in pageJSON){ // key == Projects, Posts
+        const category = categoryKey.toLowerCase();
+
+        for (const entryKey in pageJSON[categoryKey]){
+            const entry = pageJSON[categoryKey][entryKey];
+
+            if (Object.hasOwn(entry, "description")){ // desc string to html array
+                const desc = entry.description.trim().split("\n");
+                let newDesc = [];
+
+                for (const line of desc){
+                    newDesc.push( (line !== "") ? MDToHTML(line) : document.createElement("br") );
+                }
+                entry.description = newDesc;
+            }
+            entry.dataSource = "GitHub";
+        }
+    }
+
     JSONToDOM(pageJSON.projects, document.querySelector('#projects-container'), "projects");
     JSONToDOM(pageJSON.posts, document.querySelector('#posts-container'), "posts");
     addSortBars();
@@ -204,37 +225,6 @@ async function initPage() {
     document.getElementById("post-loading").remove();
 }
 initPage();
-*/
-
-/*const githubValue = await response.json();
-
-const appData = {};
-
-for (const categoryKey in githubValue){ // key == Projects, Posts
-    const category = categoryKey.toLowerCase();
-    if (!Object.hasOwn(appData, category)) { appData[category] = {}; };
-
-
-    // need to remove document.createElement to work in workers
-
-
-    for (const entryKey in githubValue[categoryKey]){
-        const entry = githubValue[categoryKey][entryKey];
-
-        if (Object.hasOwn(entry, "description")){ // desc string to html array
-            const desc = entry.description.trim().split("\n");
-            let newDesc = [];
-
-            for (const line of desc){
-                newDesc.push( (line !== "") ? MDToHTML(line) : document.createElement("br") );
-            }
-            entry.description = newDesc;
-        }
-        entry.dataSource = "GitHub";
-        appData[category][entryKey] = entry; // duplicate titles overwrite each other
-    }
-}*/
-
 
 
 /*
