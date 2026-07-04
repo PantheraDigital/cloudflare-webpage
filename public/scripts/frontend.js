@@ -197,13 +197,20 @@ function sortEntriesByIndex(a,b){
 
 async function initPage() {
     const pageJSON = window.githubData; // data from backend
+    console.log(pageJSON);
+    if (!pageJSON) { 
+        console.log("Page Load Failed. Data: ", pageJSON);
+        return; 
+    }
 
     // parse entry descriptions from MD to HTML
     for (const categoryKey in pageJSON){ // key == Projects, Posts
         const category = categoryKey.toLowerCase();
+        console.log(category.toUpperCase());
 
         for (const entryKey in pageJSON[categoryKey]){
             const entry = pageJSON[categoryKey][entryKey];
+            console.log(entryKey);
 
             if (Object.hasOwn(entry, "description")){ // desc string to html array
                 const desc = entry.description.trim().split("\n");
@@ -213,10 +220,12 @@ async function initPage() {
                     newDesc.push( (line !== "") ? MDToHTML(line) : document.createElement("br") );
                 }
                 entry.description = newDesc;
+                console.log(entry.description);
             }
             entry.dataSource = "GitHub";
         }
     }
+    console.log(pageJSON);
 
     JSONToDOM(pageJSON.projects, document.querySelector('#projects-container'), "projects");
     JSONToDOM(pageJSON.posts, document.querySelector('#posts-container'), "posts");
