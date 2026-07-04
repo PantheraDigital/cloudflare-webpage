@@ -1,8 +1,3 @@
-const githubData = INITIAL_DATA_PLACEHOLDER;
-console.log("Injected GitHub Data:", githubData);
-
-
-
 let globalTags = {};
 
 
