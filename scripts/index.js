@@ -67,6 +67,7 @@ export default {
             }
         } catch (error) {
             console.error("Failed to convert MD to HTML:", error.message);
+            return env.ASSETS.fetch(request);
         }
 
         try {
