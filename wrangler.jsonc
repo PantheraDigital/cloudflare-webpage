@@ -14,6 +14,10 @@
     {
       "binding": "GET_GITHUB_JSON",
       "service": "gather-github-json"
+    },
+    {
+      "binding": "MARKDOWN_TO_HTML",
+      "service": "markdown-to-html"
     }
   ]
 }

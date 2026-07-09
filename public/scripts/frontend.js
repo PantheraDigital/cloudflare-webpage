@@ -196,6 +196,7 @@ function sortEntriesByIndex(a,b){
 
 
 async function initPage() {
+    /*
     const pageJSON = window.githubData; // data from backend
     if (!pageJSON) { 
         console.log("Page Load Failed. Data: ", pageJSON);
@@ -224,6 +225,7 @@ async function initPage() {
 
     JSONToDOM(pageJSON.Projects, document.querySelector('#projects-container'), "projects");
     JSONToDOM(pageJSON.Posts, document.querySelector('#posts-container'), "posts");
+    */
     addSortBars();
     document.getElementById("project-loading").remove();
     document.getElementById("post-loading").remove();

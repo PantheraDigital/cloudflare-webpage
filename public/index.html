@@ -11,16 +11,10 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="Panthera">
     <meta property="og:description" content="Resume website for Panthera. View their projects, posts and contact info here.">
-    <meta property="og:image" content="https://pantheradigital.github.io/project-imgs/PantheraDigital_PageScreenshot.webp">
+    <meta property="og:image" content="https://cloudflare-webpage.panthera-digital.workers.dev/imgs/webpage-screenshot.webp">
     <meta property="og:image:alt" content="An image preview of the website depicting the name Panthera above three buttons labled about, projects, and links. Next to this is a circle with pink at the top gradually becoming blue before the bottom allong with the image of four scratch marks over the circle.">
-    <meta property="og:url" content="https://pantheradigital.github.io/">
+    <meta property="og:url" content="https://cloudflare-webpage.panthera-digital.workers.dev/">
     
-
-    <script>
-        window.githubData = GITHUB_DATA_PLACEHOLDER;
-        console.log("Injected GitHub Data:", githubData);
-    </script>
-
     <style>
         /*Logo Style*/
         :root{
@@ -577,7 +571,7 @@
     </span>
     <span style="pointer-events: none; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <span class="logo-wrapper" >
-            <img class="logo-img" src="logo/logo.webp" alt="Panthera's logo depicting a tiger scull over a neon sunset." loading="lazy">
+            <img class="logo-img" src="imgs/logo/logo.webp" alt="Panthera's logo depicting a tiger scull over a neon sunset." loading="lazy">
             <span class="logo-shape-wrapper">
                 <span class="logo-shape"></span>
             </span>
@@ -603,6 +597,7 @@
                     <section class="main-content">
                         <h2 style="margin-bottom: 0;">Projects</h2>
                         <div id="projects-container" style="margin-left: 5px; flex-grow: 1;">
+                            <!--placeholder-projects-data-->
                         </div>
                         <div id="project-loading" style="position: absolute; inset: 0; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                             <span class="auto-scroll-container" data-scroll-step="-1" data-scroll-update="50" style="display: inline-block; width: 100%;">
@@ -630,7 +625,9 @@
                 <div class="main-block">
                     <section class="main-content">
                         <h2 style="margin-bottom: 0;">Posts</h2>
-                        <div id="posts-container" style="margin-left: 5px; flex-grow: 1;"></div>
+                        <div id="posts-container" style="margin-left: 5px; flex-grow: 1;">
+                            <!--placeholder-posts-data-->
+                        </div>
                         <div id="post-loading" style="position: absolute; inset: 0; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
                             <span class="auto-scroll-container" data-scroll-step="-1" data-scroll-update="50" style="display: inline-block; width: 100%;">
                                 <span class="auto-scroll-content" style="color:orange; text-shadow: black 1px 1px; display: inline-block; height: 2rem; line-height: 2rem; vertical-align: middle; font-family: 'Lucida Console', monospace;">
@@ -701,13 +698,13 @@
                                 <h3 style="font-size: medium; margin-top: 0; margin-left: 0;">certs</h3>
                                 <ul style="flex: 1 1 100%; display: inline-flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0; margin: 0;">
                                     <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
-                                        <img style="height: 130px;" src="certs/PI.webp" alt="Python Institute Certification for proficiency in the Python programming language. Exam Code PCEP 30 02." loading="lazy">
+                                        <img style="height: 130px;" src="imgs/certs/PI.webp" alt="Python Institute Certification for proficiency in the Python programming language. Exam Code PCEP 30 02." loading="lazy">
                                     </li>
                                     <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
-                                        <img style="height: 130px;" src="certs/JSaDS.webp" alt="Free Code Camp Certification for JavaScript algorithms and data structures." loading="lazy">
+                                        <img style="height: 130px;" src="imgs/certs/JSaDS.webp" alt="Free Code Camp Certification for JavaScript algorithms and data structures." loading="lazy">
                                     </li>
                                     <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
-                                        <img style="height: 130px;" src="certs/CS.webp" alt="Free Code Camp Certification for foundational C-Sharp with Microsoft." loading="lazy">
+                                        <img style="height: 130px;" src="imgs/certs/CS.webp" alt="Free Code Camp Certification for foundational C-Sharp with Microsoft." loading="lazy">
                                     </li>
                                 </ul>
                             </div>
