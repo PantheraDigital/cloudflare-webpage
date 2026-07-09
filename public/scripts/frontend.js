@@ -117,9 +117,9 @@ function MDToHTML(mdText){
     return result;
 }
 
-function addSortBars(){
+function addSortBars(allEntryTags){
     const tagSelectorTemplate = document.querySelector('#tag-selector-template');
-    for (const tagGroup in globalTags){
+    for (const tagGroup in allEntryTags){
         const page = document.getElementById(tagGroup);
         const pageContent = (page) ? page.querySelector('section.main-content') : null;
         if (!pageContent) { continue; }
@@ -139,7 +139,7 @@ function addSortBars(){
                 sortPageEntries(container, sortEntriesByIndex);
             });
         
-        for (const tag of globalTags[tagGroup]){
+        for (const tag of allEntryTags[tagGroup]){
             const labelClone = document.importNode(label, true);
             const input = labelClone.querySelector("input");
 
@@ -226,9 +226,28 @@ async function initPage() {
     JSONToDOM(pageJSON.Projects, document.querySelector('#projects-container'), "projects");
     JSONToDOM(pageJSON.Posts, document.querySelector('#posts-container'), "posts");
     */
-    addSortBars();
-    document.getElementById("project-loading").remove();
-    document.getElementById("post-loading").remove();
+    // gather tags
+    // {projects:{}, posts:{}}
+
+    let allEntryTags = {};
+    const projects = document.querySelector('#projects-container').querySelectorAll(".project-details");
+    const posts = document.querySelector('#posts-container').querySelectorAll(".project-details");
+
+    let tagGroup = "projects";
+    for (const entry of projects) {
+        const entryTags = entry.getAttribute("data-tags").split(",").forEach((element) => element = element.trim());
+        let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
+        allEntryTags[tagGroup] = new Set(newSet);
+    }
+
+    tagGroup = "posts";
+    for (const entry of posts) {
+        const entryTags = entry.getAttribute("data-tags").split(",").forEach((element) => element = element.trim());
+        let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
+        allEntryTags[tagGroup] = new Set(newSet);
+    }
+
+    addSortBars(allEntryTags);
 }
 initPage();
 
