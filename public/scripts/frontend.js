@@ -235,17 +235,20 @@ async function initPage() {
 
     let tagGroup = "projects";
     for (const entry of projects) {
-        const entryTags = entry.getAttribute("data-tags").split(",").forEach((element) => element = element.trim());
+        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
+        console.log(entryTags);
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
     }
 
     tagGroup = "posts";
     for (const entry of posts) {
-        const entryTags = entry.getAttribute("data-tags").split(",").forEach((element) => element = element.trim());
+        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
+        console.log(entryTags);
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
     }
+    console.log(allEntryTags);
 
     addSortBars(allEntryTags);
 }
