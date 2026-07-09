@@ -1,7 +1,7 @@
-function projectTemplate({ entryGroup, title, link, imgSrc, imgDes, tags, description }) {
+function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, tags, description }) {
     const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
     return `
-    <details class="project-details" name="${entryGroup}" data-tags="${tags ? tags : ''}">
+    <details class="project-details" name="${entryGroup}" data-tags="${tags ? tags : ''}" data-original-index="${entryIndex}">
         <summary>${title}</summary>
         <div class="project-body">
             ${imgSrc ? `<img src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
@@ -34,10 +34,9 @@ export default {
         try{
             // gather MD descriptions
             let descJSON = {};
-            let count = 0;
+            let count = 0; // object needs to be flat, count prevents key collision
             for (const entryKey in githubValue.Projects){
                 descJSON[count] = githubValue.Projects[entryKey].description;
-                if (count === 1) {console.log("MD Sample", descJSON[count]);}
                 count += 1;
             }
             for (const entryKey in githubValue.Posts){
@@ -58,7 +57,6 @@ export default {
             count = 0;
             for (const entryKey in githubValue.Projects){
                 githubValue.Projects[entryKey].description = htmlDescJson[count];
-                if (count === 1) {console.log("HTML Sample", githubValue.Projects[entryKey]);}
                 count += 1;
             }
             for (const entryKey in githubValue.Posts){
@@ -75,14 +73,15 @@ export default {
             let htmlText = await assetResponse.text();
             //htmlText = htmlText.replace("GITHUB_DATA_PLACEHOLDER", (githubValue) ? JSON.stringify(githubValue) : "{}"); 
             
-            let count = 0;
             // Projects
             const entryArray = [];
+            let index = 0;
             for (const entryKey in githubValue.Projects){
                 const entry = githubValue.Projects[entryKey];
 
                 entryArray.push(projectTemplate({
                     entryGroup: "projects",
+                    entryIndex: index,
                     title: entryKey,
                     link: entry.link,
                     imgSrc: entry.imgSrc,
@@ -90,8 +89,7 @@ export default {
                     tags: entry.tags,
                     description: entry.description
                 }));
-                if (count === 1) {console.log("HTML Template Sample", entryArray);}
-                count += 1;
+                index += 1;
             }
             htmlText = htmlText.replace("<!--placeholder-projects-data-->", entryArray.join('\n'));
             
@@ -102,6 +100,7 @@ export default {
                 
                 entryArray.push(projectTemplate({
                     entryGroup: "posts",
+                    entryIndex: index,
                     title: entryKey,
                     link: entry.link,
                     imgSrc: entry.imgSrc,
@@ -109,6 +108,7 @@ export default {
                     tags: entry.tags,
                     description: entry.description
                 }));
+                index += 1;
             }
             htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('\n'));
 
