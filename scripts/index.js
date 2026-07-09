@@ -57,12 +57,12 @@ export default {
             let htmlDescJson = await response.json();
             count = 0;
             for (const entryKey in githubValue.Projects){
-                githubValue.Projects[entryKey] = htmlDescJson[count];
+                githubValue.Projects[entryKey].description = htmlDescJson[count];
                 if (count === 1) {console.log("HTML Sample", githubValue.Projects[entryKey]);}
                 count += 1;
             }
             for (const entryKey in githubValue.Posts){
-                githubValue.Posts[entryKey] = htmlDescJson[count];
+                githubValue.Posts[entryKey].description = htmlDescJson[count];
                 count += 1;
             }
         } catch (error) {
