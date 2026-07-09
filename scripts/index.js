@@ -1,7 +1,7 @@
 function projectTemplate({ title, link, imgSrc, imgDes, tags, description }) {
     const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
     return `
-    <details class="project-details" data-tags="${tagsText ? tagsText : ''}">
+    <details class="project-details" data-tags="${tags ? tags : ''}">
         <summary>${title}</summary>
         <div class="project-body">
             ${imgSrc ? `<img src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
