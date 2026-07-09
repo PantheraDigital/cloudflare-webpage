@@ -1,122 +1,3 @@
-let globalTags = {};
-
-
-// parse JSON to DOM elements
-// {"entry 1 title": {}, "entry 2 title": {}}
-function JSONToDOM(json, domElement, tagGroup){
-    const projectTemplate = document.querySelector('#project-template');
-    const entries = domElement.querySelectorAll(".project-details");
-    let elementIndex = entries.length;
-    
-    for (const key in json){
-        const clone = document.importNode(projectTemplate.content, true);
-
-        clone.querySelector('summary').textContent = " " + key;
-
-        if (Object.hasOwn(json[key], "imgSrc")){
-            const img = clone.querySelector('img');
-            img.src = json[key].imgSrc;
-            img.alt = json[key].imgDescription;
-        } else {
-            clone.querySelector('img').remove();
-            clone.querySelector('br').remove();
-        }
-
-        if (Object.hasOwn(json[key], "tags")){
-            json[key].tags = json[key].tags.filter(Boolean);
-            let newSet = (Object.hasOwn(globalTags, tagGroup)) ? [...globalTags[tagGroup], ...json[key].tags] : json[key].tags;
-            globalTags[tagGroup] = new Set(newSet);
-            clone.querySelector('[name="tags"]').insertAdjacentText("beforeend", json[key].tags.join(", "));
-            clone.querySelector('details').setAttribute("data-tags", json[key].tags.toString());
-        } else {
-            clone.querySelector('[name="tags"]').remove();
-        }
-        
-        if (Object.hasOwn(json[key], "description")){
-            const tagElement = clone.querySelector('[name="tags"]');
-            const detailsElement = clone.querySelector('details').querySelector('.project-body');
-            
-            for (const index in json[key].description) {
-                const descElement = json[key].description[index];
-                if (tagElement){
-                    detailsElement.insertBefore(descElement, tagElement);
-                } else {
-                    detailsElement.appendChild(descElement);
-                }
-            }
-        }
-
-        if (Object.hasOwn(json[key], "link")){
-            const link = clone.querySelector('a');
-            link.href = json[key].link;
-            link.textContent = json[key].link;
-        } else {
-            clone.querySelector('a').remove();
-        }
-
-        clone.querySelector('details').setAttribute("data-original-index", elementIndex);
-        clone.querySelector('details').setAttribute("name", tagGroup + "-details");
-        domElement.appendChild(clone);
-        elementIndex += 1;
-    }
-}
-
-// returns a single p element with inline elements [img, a, br]
-function MDToHTML(mdText){
-    const result = document.createElement("p");
-    let start = 0;
-
-    while (start < mdText.length - 1){
-        let index1 = mdText.indexOf("[", start);
-        let index2 = (index1 > -1 && index1 < mdText.length - 1) ? mdText.indexOf("]", index1 + 1) : -1;
-        let indexi = (index2 > -1 && index2 < mdText.length - 1) ? mdText.indexOf("(", index2 + 1) : -1;
-        let indexii = (indexi > -1 && indexi < mdText.length - 1) ? mdText.indexOf(")", indexi + 1) : -1;
-        
-        if (index2 === -1){ // no MD
-            result.insertAdjacentText("beforeend", mdText.substring(start));
-            break;
-        }
-
-        let elementText = mdText.substring(index1 + 1, index2);
-        let elementSText = (indexi > -1 && indexi === index2 + 1 && indexii > -1) ? mdText.substring(indexi + 1, indexii) : "";
-
-        if (index1 > start){ // leading text
-            if (mdText[index1 - 1] === "!"){
-                if (index1 - 1 > start){
-                    result.insertAdjacentText("beforeend", mdText.substring(start, index1 - 1));
-                }
-            } else {
-                result.insertAdjacentText("beforeend", mdText.substring(start, index1));
-            }
-        }
-        
-        if (elementSText){
-            if (index1 > start && mdText[index1 - 1] === "!"){
-                let img = document.createElement("img");
-                img.src = elementSText;
-                img.alt = elementText;
-                result.appendChild(img);
-            } else {
-                let link = document.createElement("a");
-                link.href = elementSText;
-                link.textContent = (elementText === "") ? elementSText : elementText;
-                result.appendChild(link);
-            }
-            start = indexii + 1;
-        }else{
-            if (elementText === "br"){
-                let br = document.createElement("br");
-                result.appendChild(br);
-            } else { // not md element
-                result.insertAdjacentText("beforeend", mdText.substring(start, index2 + 1));
-            }
-            start = index2 + 1;
-        }
-    }
-
-    return result;
-}
-
 function addSortBars(allEntryTags){
     const tagSelectorTemplate = document.querySelector('#tag-selector-template');
     for (const tagGroup in allEntryTags){
@@ -196,39 +77,6 @@ function sortEntriesByIndex(a,b){
 
 
 async function initPage() {
-    /*
-    const pageJSON = window.githubData; // data from backend
-    if (!pageJSON) { 
-        console.log("Page Load Failed. Data: ", pageJSON);
-        return; 
-    }
-
-    // parse entry descriptions from MD to HTML
-    for (const categoryKey in pageJSON){ // key == Projects, Posts
-        const category = categoryKey.toLowerCase();
-
-        for (const entryKey in pageJSON[categoryKey]){
-            const entry = pageJSON[categoryKey][entryKey];
-
-            if (Object.hasOwn(entry, "description")){ // desc string to html array
-                const desc = entry.description.trim().split("\n");
-                let newDesc = [];
-
-                for (const line of desc){
-                    newDesc.push( (line !== "") ? MDToHTML(line) : document.createElement("br") );
-                }
-                entry.description = newDesc;
-            }
-            entry.dataSource = "GitHub";
-        }
-    }
-
-    JSONToDOM(pageJSON.Projects, document.querySelector('#projects-container'), "projects");
-    JSONToDOM(pageJSON.Posts, document.querySelector('#posts-container'), "posts");
-    */
-    // gather tags
-    // {projects:{}, posts:{}}
-
     let allEntryTags = {};
     const projects = document.querySelector('#projects-container').querySelectorAll(".project-details");
     const posts = document.querySelector('#posts-container').querySelectorAll(".project-details");
@@ -236,7 +84,6 @@ async function initPage() {
     let tagGroup = "projects";
     for (const entry of projects) {
         const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
-        console.log(entryTags);
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
     }
@@ -244,56 +91,13 @@ async function initPage() {
     tagGroup = "posts";
     for (const entry of posts) {
         const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
-        console.log(entryTags);
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
     }
-    console.log(allEntryTags);
 
     addSortBars(allEntryTags);
 }
 initPage();
-
-
-/*
-  auto scrolling text
-*/
-function enableScroll(scrollContainer, step = -0.1, updateFrequency = 0){
-	let scrollContent = scrollContainer.querySelector(".auto-scroll-content");
-	
-	function scroll(){
-		if(step < 0){
-			scrollContent.style.left = (parseFloat(window.getComputedStyle(scrollContent).left) + step).toString() + "px";
-			if(scrollContent.firstElementChild.getBoundingClientRect().right < scrollContainer.getBoundingClientRect().left){
-				scrollContent.appendChild(scrollContent.firstElementChild);
-				scrollContent.style.left = "";// resets pos to start
-			}
-		}else{
-			scrollContent.style.right = (parseFloat(window.getComputedStyle(scrollContent).right) - step).toString() + "px";
-			if(scrollContent.lastElementChild.getBoundingClientRect().left > scrollContainer.getBoundingClientRect().right){
-				scrollContent.prepend(scrollContent.lastElementChild);
-				scrollContent.style.right = (scrollContent.offsetWidth - scrollContainer.offsetWidth).toString() + "px";
-			}
-		}
-	}
-
-	if(scrollContent && scrollContainer){
-		let stepOverride = scrollContainer.getAttribute("data-scroll-step");
-		if(stepOverride){ step = parseFloat(stepOverride); }
-		let updateOverride = scrollContainer.getAttribute("data-scroll-update");
-		if(updateOverride){ updateFrequency = parseFloat(updateOverride); }
-
-		if(step > 0){
-			scrollContent.style.right = (scrollContent.offsetWidth - scrollContainer.offsetWidth).toString() + "px";
-		}
-		setInterval(scroll, updateFrequency);
-	}
-}
-
-let scrolls = document.querySelectorAll(".auto-scroll-container");
-for(const scroll of scrolls){
-	enableScroll(scroll);
-}
 
 
 
