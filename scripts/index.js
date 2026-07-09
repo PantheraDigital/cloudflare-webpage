@@ -31,21 +31,17 @@ export default {
 
         if (!githubValue) { return env.ASSETS.fetch(request); }
 
-        // use markdown worker
-        // combine all desc into json for conversion
-        // re-assign new desc html
         try{
             // gather MD descriptions
             let descJSON = {};
             let count = 0;
             for (const entryKey in githubValue.Projects){
-                const entry = githubValue.Projects[entryKey];
-                descJSON[count] = entry.description;
+                descJSON[count] = githubValue.Projects[entryKey].description;
+                if (count === 1) {console.log("MD Sample", descJSON[count]);}
                 count += 1;
             }
             for (const entryKey in githubValue.Posts){
-                const entry = githubValue.Posts[entryKey];
-                descJSON[count] = entry.description;
+                descJSON[count] = githubValue.Posts[entryKey].description;
                 count += 1;
             }
 
@@ -62,6 +58,7 @@ export default {
             count = 0;
             for (const entryKey in githubValue.Projects){
                 githubValue.Projects[entryKey] = htmlDescJson[count];
+                if (count === 1) {console.log("HTML Sample", githubValue.Projects[entryKey]);}
                 count += 1;
             }
             for (const entryKey in githubValue.Posts){
@@ -77,6 +74,7 @@ export default {
             let htmlText = await assetResponse.text();
             //htmlText = htmlText.replace("GITHUB_DATA_PLACEHOLDER", (githubValue) ? JSON.stringify(githubValue) : "{}"); 
             
+            let count = 0;
             // Projects
             const entryArray = [];
             for (const entryKey in githubValue.Projects){
@@ -90,8 +88,10 @@ export default {
                     tags: entry.tags,
                     description: entry.description
                 }));
+                if (count === 1) {console.log("HTML Template Sample", entryArray);}
+                count += 1;
             }
-            htmlText = htmlText.replace("<!--placeholder-projects-data-->", entryArray.join('<br>'));
+            htmlText = htmlText.replace("<!--placeholder-projects-data-->", entryArray.join('\n'));
             
             // Posts
             entryArray.length = 0;
@@ -107,7 +107,7 @@ export default {
                     description: entry.description
                 }));
             }
-            htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('<br>'));
+            htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('\n'));
 
             return new Response(htmlText, {
                 headers: { "Content-Type": "text/html;charset=UTF-8" }
