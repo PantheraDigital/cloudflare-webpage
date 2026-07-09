@@ -1,7 +1,7 @@
-function projectTemplate({ title, link, imgSrc, imgDes, tags, description }) {
+function projectTemplate({ entryGroup, title, link, imgSrc, imgDes, tags, description }) {
     const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
     return `
-    <details class="project-details" data-tags="${tags ? tags : ''}">
+    <details class="project-details" name="${entryGroup}" data-tags="${tags ? tags : ''}">
         <summary>${title}</summary>
         <div class="project-body">
             ${imgSrc ? `<img src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
@@ -82,6 +82,7 @@ export default {
                 const entry = githubValue.Projects[entryKey];
 
                 entryArray.push(projectTemplate({
+                    entryGroup: "projects",
                     title: entryKey,
                     link: entry.link,
                     imgSrc: entry.imgSrc,
@@ -100,6 +101,7 @@ export default {
                 const entry = githubValue.Posts[entryKey];
                 
                 entryArray.push(projectTemplate({
+                    entryGroup: "posts",
                     title: entryKey,
                     link: entry.link,
                     imgSrc: entry.imgSrc,
