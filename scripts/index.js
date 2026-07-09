@@ -1,3 +1,17 @@
+function projectTemplate({ title, link, imgSrc, imgDes, tags, description }) {
+    const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
+    return `
+    <details class="project-details">
+        <summary>${title}</summary>
+        <div class="project-body">
+            ${imgSrc ? `<img src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
+            ${link ? `<a href="${link}" aria-label="Project Link">${link}</a>` : ''}
+            ${description ? description : ''}
+            ${tagsText ? `<p name="tags">${tagsText}</p>` : ''}
+        </div>
+    </details>`;
+}
+
 export default {
     async fetch(request, env) {
         const url = new URL(request.url);
@@ -15,13 +29,88 @@ export default {
             console.error("Failed to load GitHub data:", error.message);
         }
 
+        if (!githubValue) { return env.ASSETS.fetch(request); }
+
+        // use markdown worker
+        // combine all desc into json for conversion
+        // re-assign new desc html
+        try{
+            // gather MD descriptions
+            let descJSON = {};
+            let count = 0;
+            for (const entryKey in githubValue.Projects){
+                const entry = githubValue.Projects[entryKey];
+                descJSON[count] = entry.description;
+                count += 1;
+            }
+            for (const entryKey in githubValue.Posts){
+                const entry = githubValue.Posts[entryKey];
+                descJSON[count] = entry.description;
+                count += 1;
+            }
+
+            // batch convert MD to HTML
+            const response = await env.MARKDOWN_TO_HTML.fetch("https://dummy/", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(descJSON),
+            });
+            if (!response.ok) throw new Error(`MARKDOWN_TO_HTML data retrieval failed. Status: ${response.status}`);
+            
+            // reassign descriptions to HTML
+            let htmlDescJson = await response.json();
+            count = 0;
+            for (const entryKey in githubValue.Projects){
+                githubValue.Projects[entryKey] = htmlDescJson[count];
+                count += 1;
+            }
+            for (const entryKey in githubValue.Posts){
+                githubValue.Posts[entryKey] = htmlDescJson[count];
+                count += 1;
+            }
+        } catch (error) {
+            console.error("Failed to convert MD to HTML:", error.message);
+        }
+
         try {
             const assetResponse = await env.ASSETS.fetch(request);
             let htmlText = await assetResponse.text();
+            //htmlText = htmlText.replace("GITHUB_DATA_PLACEHOLDER", (githubValue) ? JSON.stringify(githubValue) : "{}"); 
             
-            htmlText = htmlText.replace("GITHUB_DATA_PLACEHOLDER", (githubValue) ? JSON.stringify(githubValue) : "{}");
+            // Projects
+            const entryArray = [];
+            for (const entryKey in githubValue.Projects){
+                const entry = githubValue.Projects[entryKey];
+
+                entryArray.push(projectTemplate({
+                    title: entryKey,
+                    link: entry.link,
+                    imgSrc: entry.imgSrc,
+                    imgDes: entry.imgDes,
+                    tags: entry.tags,
+                    description: entry.description
+                }));
+            }
+            htmlText = htmlText.replace("<!--placeholder-projects-data-->", entryArray.join('<br>'));
+            
+            // Posts
+            entryArray.length = 0;
+            for (const entryKey in githubValue.Posts){
+                const entry = githubValue.Posts[entryKey];
+                
+                entryArray.push(projectTemplate({
+                    title: entryKey,
+                    link: entry.link,
+                    imgSrc: entry.imgSrc,
+                    imgDes: entry.imgDes,
+                    tags: entry.tags,
+                    description: entry.description
+                }));
+            }
+            htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('<br>'));
+
             return new Response(htmlText, {
-                headers: { "content-type": "text/html;charset=UTF-8" }
+                headers: { "Content-Type": "text/html;charset=UTF-8" }
             });
         } catch (error) {
             console.error("Data injection failed, serving original file:", error.message);
