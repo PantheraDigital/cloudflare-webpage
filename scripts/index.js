@@ -20,6 +20,18 @@ export default {
             return env.ASSETS.fetch(request);
         }
 
+        try{ // get stored html render if fresh
+            const htmlCacheFresh = await env.WEBPAGE_KV.get("html_render_fresh");
+            if (htmlCacheFresh && htmlCacheFresh === "true") {
+                const htmlRender = await env.WEBPAGE_KV.get("html_render");
+                return new Response(htmlRender, {
+                    headers: { "Content-Type": "text/html;charset=UTF-8" }
+                });
+            } // fresh only set false if MD file updated, html update does not trigger unfresh
+        } catch(error) {
+            console.error("failed to retrieve KV cache data:", error.message);
+        }
+
         let githubValue = null;
         try {
             const response = await env.GET_GITHUB_JSON.fetch("https://dummy/");
@@ -71,7 +83,6 @@ export default {
         try {
             const assetResponse = await env.ASSETS.fetch(request);
             let htmlText = await assetResponse.text();
-            //htmlText = htmlText.replace("GITHUB_DATA_PLACEHOLDER", (githubValue) ? JSON.stringify(githubValue) : "{}"); 
             
             // Projects
             const entryArray = [];
@@ -112,6 +123,12 @@ export default {
             }
             htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('\n'));
 
+            ctx.waitUntil(
+                Promise.all([
+                    env.WEBPAGE_KV.put("html_render", htmlText),
+                    env.WEBPAGE_KV.put("html_render_fresh", "true")
+                ]).catch(err => console.error("Failed store html render:", err.message))
+            );
             return new Response(htmlText, {
                 headers: { "Content-Type": "text/html;charset=UTF-8" }
             });

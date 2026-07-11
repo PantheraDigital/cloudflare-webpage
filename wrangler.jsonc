@@ -10,6 +10,12 @@
     "binding": "ASSETS",
     "run_worker_first": true
   },
+  "kv_namespaces": [
+    {
+      "binding": "WEBPAGE_KV",
+      "id": "9fd7e9f61bc94405892ecbb6903f89b8"
+    }
+  ],
   "services": [
     {
       "binding": "GET_GITHUB_JSON",
