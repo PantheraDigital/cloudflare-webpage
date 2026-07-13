@@ -30,7 +30,7 @@ export default {
                 });
             } // fresh only set false if MD file updated, html update does not trigger unfresh ////
         } catch(error) {
-            console.error("failed to retrieve KV cache data:", error.message);
+            console.error("Failed to retrieve KV cache data:", error.message);
         }
 
         let githubValue = null;
@@ -98,7 +98,7 @@ export default {
                 });
             }).join('\n');
 
-            htmlText = htmlText.replace("<!--placeholder-projects-data-->", entryArray.join('\n'));
+            htmlText = htmlText.replace("<!--placeholder-projects-data-->", projectHTML);
             
             // Posts
             const postHTML = postEntries.map(([title, entry], index) => {
@@ -113,8 +113,8 @@ export default {
                     description: entry.description
                 });
             }).join('\n');
-            
-            htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('\n'));
+
+            htmlText = htmlText.replace("<!--placeholder-posts-data-->", postHTML);
 
             ctx.waitUntil(
                 Promise.all([
