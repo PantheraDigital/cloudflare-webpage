@@ -1,7 +1,8 @@
 function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, tags, description }) {
     const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
+    const tagsData = tags && tags.length > 0 ? tags.join(',') : '';
     return `
-    <details class="project-details" name="${entryGroup}" data-tags="${tags ? tags : ''}" data-original-index="${entryIndex}">
+    <details class="project-details" name="${entryGroup}" data-tags="${tagsData}" data-original-index="${entryIndex}">
         <summary>${title}</summary>
         <div class="project-body">
             ${imgSrc ? `<img src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
@@ -27,7 +28,7 @@ export default {
                 return new Response(htmlRender, {
                     headers: { "Content-Type": "text/html;charset=UTF-8" }
                 });
-            } // fresh only set false if MD file updated, html update does not trigger unfresh
+            } // fresh only set false if MD file updated, html update does not trigger unfresh ////
         } catch(error) {
             console.error("failed to retrieve KV cache data:", error.message);
         }
@@ -45,14 +46,17 @@ export default {
 
         try{
             // gather MD descriptions
-            let descJSON = {};
-            let count = 0; // object needs to be flat, count prevents key collision
-            for (const entryKey in githubValue.Projects){
-                descJSON[count] = githubValue.Projects[entryKey].description;
+            const descJSON = {}; // {0:"desc", 1:"desc"}
+            const projectEntries = Object.entries(githubValue.Projects || {});
+            const postEntries = Object.entries(githubValue.Posts || {});
+            let count = 0;
+
+            for (const [_, entry] of projectEntries){
+                descJSON[count] = entry.description || '';
                 count += 1;
             }
-            for (const entryKey in githubValue.Posts){
-                descJSON[count] = githubValue.Posts[entryKey].description;
+            for (const [_, entry] of postEntries){
+                descJSON[count] = entry.description || '';
                 count += 1;
             }
 
@@ -67,60 +71,49 @@ export default {
             // reassign descriptions to HTML
             let htmlDescJson = await response.json();
             count = 0;
-            for (const entryKey in githubValue.Projects){
-                githubValue.Projects[entryKey].description = htmlDescJson[count];
+            for (const [_, entry] of projectEntries){
+                entry.description = htmlDescJson[count];
                 count += 1;
             }
-            for (const entryKey in githubValue.Posts){
-                githubValue.Posts[entryKey].description = htmlDescJson[count];
+            for (const [_, entry] of postEntries){
+                entry.description = htmlDescJson[count];
                 count += 1;
             }
-        } catch (error) {
-            console.error("Failed to convert MD to HTML:", error.message);
-            return env.ASSETS.fetch(request);
-        }
 
-        try {
+            // inject HTML
             const assetResponse = await env.ASSETS.fetch(request);
             let htmlText = await assetResponse.text();
             
             // Projects
-            const entryArray = [];
-            let index = 0;
-            for (const entryKey in githubValue.Projects){
-                const entry = githubValue.Projects[entryKey];
-
-                entryArray.push(projectTemplate({
+            const projectHTML = projectEntries.map(([title, entry], index) => {
+                return projectTemplate({
                     entryGroup: "projects",
                     entryIndex: index,
-                    title: entryKey,
+                    title: title,
                     link: entry.link,
                     imgSrc: entry.imgSrc,
                     imgDes: entry.imgDes,
                     tags: entry.tags,
                     description: entry.description
-                }));
-                index += 1;
-            }
+                });
+            }).join('\n');
+
             htmlText = htmlText.replace("<!--placeholder-projects-data-->", entryArray.join('\n'));
             
             // Posts
-            entryArray.length = 0;
-            for (const entryKey in githubValue.Posts){
-                const entry = githubValue.Posts[entryKey];
-                
-                entryArray.push(projectTemplate({
+            const postHTML = postEntries.map(([title, entry], index) => {
+                return projectTemplate({
                     entryGroup: "posts",
                     entryIndex: index,
-                    title: entryKey,
+                    title: title,
                     link: entry.link,
                     imgSrc: entry.imgSrc,
                     imgDes: entry.imgDes,
                     tags: entry.tags,
                     description: entry.description
-                }));
-                index += 1;
-            }
+                });
+            }).join('\n');
+            
             htmlText = htmlText.replace("<!--placeholder-posts-data-->", entryArray.join('\n'));
 
             ctx.waitUntil(
