@@ -36,13 +36,13 @@ export default {
             ]);
 
             if (!cachedJSON) {
-                const res = await env.GET_GITHUB_JSON.fetch("/?pull=json", {
+                const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
                     headers: {"X-API-Key": env.GITHUB_WORKER_API_KEY || ""}
                 });
                 if (res.ok) cachedJSON = await res.text();
             }
             if (!rawLayoutHTML) {
-                const res = await env.GET_GITHUB_JSON.fetch("/?pull=html", {
+                const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=html", {
                     headers: {"X-API-Key": env.GITHUB_WORKER_API_KEY || ""}
                 });
                 if (res.ok) rawLayoutHTML = await res.text();
@@ -61,7 +61,7 @@ export default {
             for (const [_, entry] of projectEntries) descJSON[count++] = entry.description || '';
             for (const [_, entry] of postEntries) descJSON[count++] = entry.description || '';
 
-            const mdResponse = await env.MARKDOWN_TO_HTML.fetch("/", {
+            const mdResponse = await env.MARKDOWN_TO_HTML.fetch("https://internal", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(descJSON),
