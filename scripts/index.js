@@ -37,19 +37,15 @@ export default {
 
             if (!cachedJSON) {
                 const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
-                    headers: {
-                        method: "GET",
-                        "X-API-Key": env.GITHUB_WORKER_API_KEY || ""
-                    }
+                    method: "GET",
+                    headers: {"X-API-Key": env.GITHUB_WORKER_API_KEY || ""}
                 });
                 if (res.ok) cachedJSON = await res.text();
             }
             if (!rawLayoutHTML) {
                 const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=html", {
-                    headers: {
-                        method: "GET",
-                        "X-API-Key": env.GITHUB_WORKER_API_KEY || ""
-                    }
+                    method: "GET",
+                    headers: {"X-API-Key": env.GITHUB_WORKER_API_KEY || ""}
                 });
                 if (res.ok) rawLayoutHTML = await res.text();
             }
