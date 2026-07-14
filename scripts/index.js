@@ -21,10 +21,8 @@ export default {
         }
 
         try {
-            const isFresh = await env.WEBPAGE_KV.get("html_render_fresh");
-            const cachedRenderedHTML = await env.WEBPAGE_KV.get("html_render");
-
-            if (isFresh === "true" && cachedRenderedHTML) {
+            const { value: cachedRenderedHTML, metadata } = await env.WEBPAGE_KV.getWithMetadata("html_render");
+            if (metadata?.fresh && cachedRenderedHTML) {
                 return new Response(cachedRenderedHTML, {
                     headers: { "Content-Type": "text/html;charset=UTF-8" }
                 });
@@ -88,10 +86,9 @@ export default {
                                  .replace("<!--placeholder-posts-data-->", postHTML);
 
             ctx.waitUntil(
-                Promise.all([
-                    env.WEBPAGE_KV.put("html_render", finalHtml),
-                    env.WEBPAGE_KV.put("html_render_fresh", "true")
-                ])
+                env.WEBPAGE_KV.put("html_render", finalHtml, {
+                    metadata: { fresh: true }
+                })
             );
 
             return new Response(finalHtml, {
