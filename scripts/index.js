@@ -28,10 +28,11 @@ export default {
                 });
             }
 
-            let [cachedJSON, rawLayoutHTML] = await Promise.all([
+            let [cachedJSON, assetsResponse] = await Promise.all([
                 env.WEBPAGE_KV.get("github_json"),
-                env.WEBPAGE_KV.get("raw_layout_html")
+                env.ASSETS.fetch(request)
             ]);
+            let rawLayoutHTML = assetsResponse.ok ? await assetsResponse.text() : null;
 
             if (!cachedJSON) {
                 const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
@@ -40,14 +41,6 @@ export default {
                 });
                 if (res.ok) cachedJSON = await res.text();
             }
-            if (!rawLayoutHTML) {
-                const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=html", {
-                    method: "GET",
-                    headers: {"X-API-Key": env.GITHUB_WORKER_API_KEY || ""}
-                });
-                if (res.ok) rawLayoutHTML = await res.text();
-            }
-
             if (!cachedJSON || !rawLayoutHTML) {
                 throw new Error("Critical source recovery components missing.");
             }
