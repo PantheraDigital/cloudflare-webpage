@@ -13,84 +13,124 @@ function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, 
     </details>`;
 }
 
+async function renderHTML(request, env, overrideData = null, dataType = "") {
+    // json == override or KV or get from github
+    // html == override or ASSET or get from github
+    let json = (overrideData && dataType === "json") ? overrideData : await env.WEBPAGE_KV.get("json");
+    let html = (overrideData && dataType === "html") ? overrideData : null;
+    
+    if (!html) {
+        const assetsResponse = await env.ASSETS.fetch(new Request(new URL("/index.html", request.url)));
+        if (assetsResponse.ok) {
+            html = await assetsResponse.text();
+        } else {
+            const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=html", {
+                method: "GET",
+                headers: {"X-API-Key": env.INTERNAL_API_KEY || ""}
+            });
+            if (res.ok) html = await res.text();
+        }
+    }
+    if (!json) { 
+        const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
+            method: "GET",
+            headers: {"X-API-Key": env.INTERNAL_API_KEY || ""}
+        });
+        if (res.ok) json = await res.text();
+    }
+    
+    if (!json || !html) {
+        throw new Error("Critical source recovery components missing.");
+    }
+
+    const parsedJSON = JSON.parse(json);
+    const projectEntries = Object.entries(parsedJSON.Projects || {});
+    const postEntries = Object.entries(parsedJSON.Posts || {});
+    const descJSON = {};
+    let count = 0;
+
+    for (const [_, entry] of projectEntries) descJSON[count++] = entry.description || '';
+    for (const [_, entry] of postEntries) descJSON[count++] = entry.description || '';
+
+    const mdResponse = await env.MARKDOWN_TO_HTML.fetch("https://internal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(descJSON),
+    });
+    const htmlDescJson = await mdResponse.json();
+    
+    count = 0;
+    const projectHTML = projectEntries.map(([title, entry], idx) => {
+        const htmlDesc = htmlDescJson[count++];
+        return projectTemplate({
+            entryGroup: "projects", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
+        });
+    }).join('\n');
+
+    const postHTML = postEntries.map(([title, entry], idx) => {
+        const htmlDesc = htmlDescJson[count++];
+        return projectTemplate({
+            entryGroup: "posts", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
+        });
+    }).join('\n');
+
+    return html.replace("<!--placeholder-projects-data-->", projectHTML)
+                        .replace("<!--placeholder-posts-data-->", postHTML);
+}
+
+// GET - public get asset
+// POST - internal use only, render html and store
 export default {
     async fetch(request, env, ctx) {
-    const url = new URL(request.url);
-        if (url.pathname !== "/" && url.pathname !== "/index.html") {
-            return env.ASSETS.fetch(request);
-        }
+        const url = new URL(request.url);
 
-        try {
-            const { value: cachedRenderedHTML, metadata } = await env.WEBPAGE_KV.getWithMetadata("html_render");
-            if (metadata?.fresh && cachedRenderedHTML) {
-                return new Response(cachedRenderedHTML, {
-                    headers: { "Content-Type": "text/html;charset=UTF-8" }
-                });
+        if (request.method === "POST") {
+            if (url.hostname !== "internal" && url.pathname !== "/render") {
+                return new Response("Not Found", { status: 404 });
+            }
+            const clientApiKey = request.headers.get("X-API-Key");
+            if (!env.INTERNAL_API_KEY || clientApiKey !== env.INTERNAL_API_KEY) {
+                return new Response("Unauthorized: Invalid or Missing API Key", { status: 401 });
             }
 
-            let [cachedJSON, assetsResponse] = await Promise.all([
-                env.WEBPAGE_KV.get("github_json"),
-                env.ASSETS.fetch(request)
-            ]);
-            let rawLayoutHTML = assetsResponse.ok ? await assetsResponse.text() : null;
+            try {
+                const renderedHTML = await env.WEBPAGE_KV.get("html_render");
+                let contentType = request.headers.get('content-type');
+                let overrideData = null;
 
-            if (!cachedJSON) {
-                const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
-                    method: "GET",
-                    headers: {"X-API-Key": env.GITHUB_WORKER_API_KEY || ""}
-                });
-                if (res.ok) cachedJSON = await res.text();
+                if (contentType) {
+                    if (contentType.includes('application/json')) {
+                        contentType = "json";
+                        overrideData = await request.text();
+                    } else if (contentType.includes('text/html')) {
+                        contentType = "html";
+                        overrideData = await request.text();
+                    }
+                }
+
+                const newHTML = await renderHTML(request, env, overrideData, contentType);
+                ctx.waitUntil(env.WEBPAGE_KV.put("html_render", newHTML));
+                return new Response("Render Success");
+                
+            } catch (error) {
+                console.error("Render failure:", error.message);
+                return new Response(`Render failure: ${error.message}`);
             }
-            if (!cachedJSON || !rawLayoutHTML) {
-                throw new Error("Critical source recovery components missing.");
-            }
-
-            const githubValue = JSON.parse(cachedJSON);
-            const projectEntries = Object.entries(githubValue.Projects || {});
-            const postEntries = Object.entries(githubValue.Posts || {});
-            const descJSON = {};
-            let count = 0;
-
-            for (const [_, entry] of projectEntries) descJSON[count++] = entry.description || '';
-            for (const [_, entry] of postEntries) descJSON[count++] = entry.description || '';
-
-            const mdResponse = await env.MARKDOWN_TO_HTML.fetch("https://internal", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(descJSON),
-            });
-            const htmlDescJson = await mdResponse.json();
             
-            count = 0;
-            for (const [_, entry] of projectEntries) entry.description = htmlDescJson[count++];
-            for (const [_, entry] of postEntries) entry.description = htmlDescJson[count++];
+        } else if (request.method === "GET") {
+            if (url.pathname !== "/" && url.pathname !== "/index.html") {
+                return env.ASSETS.fetch(request);
+            }
 
-            let finalHtml = rawLayoutHTML;
-            
-            const projectHTML = projectEntries.map(([title, entry], idx) => projectTemplate({
-                entryGroup: "projects", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: entry.description
-            })).join('\n');
-
-            const postHTML = postEntries.map(([title, entry], idx) => projectTemplate({
-                entryGroup: "posts", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: entry.description
-            })).join('\n');
-
-            finalHtml = finalHtml.replace("<!--placeholder-projects-data-->", projectHTML)
-                                 .replace("<!--placeholder-posts-data-->", postHTML);
-
-            ctx.waitUntil(
-                env.WEBPAGE_KV.put("html_render", finalHtml, {
-                    metadata: { fresh: true }
-                })
-            );
-
-            return new Response(finalHtml, {
-                headers: { "Content-Type": "text/html;charset=UTF-8" }
-            });
-
-        } catch (error) {
-            console.error("Pipeline failure:", error.message);
-            return env.ASSETS.fetch(request);
+            try {
+                const renderedHTML = await env.WEBPAGE_KV.get("html_render");
+                if (renderedHTML) {
+                    return new Response(renderedHTML, {headers: { "Content-Type": "text/html;charset=UTF-8" }});
+                }
+            } catch (error) {
+                console.error("HTML gathering failure", error.message);
+            }
         }
+        return new Response("Not Found", { status: 404 });
     }
 };
