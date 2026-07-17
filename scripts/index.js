@@ -24,19 +24,23 @@ async function renderHTML(request, env, overrideData = null, dataType = "") {
         if (assetsResponse.ok) {
             html = await assetsResponse.text();
         } else {
-            const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=html", {
+            /*const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=html", {
                 method: "GET",
                 headers: {"X-API-Key": env.INTERNAL_API_KEY || ""}
             });
-            if (res.ok) html = await res.text();
+            if (res.ok) html = await res.text();*/
+
+            html = await env.GET_GITHUB_JSON.fetchGitHubRawData("html");
         }
     }
     if (!json) { 
-        const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
+        /*const res = await env.GET_GITHUB_JSON.fetch("https://internal/?pull=json", {
             method: "GET",
             headers: {"X-API-Key": env.INTERNAL_API_KEY || ""}
         });
-        if (res.ok) json = await res.text();
+        if (res.ok) json = await res.text();*/
+
+        json = await env.GET_GITHUB_JSON.fetchGitHubRawData("json");
     }
     
     if (!json || !html) {
