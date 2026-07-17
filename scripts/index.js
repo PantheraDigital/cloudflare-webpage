@@ -25,10 +25,12 @@ async function renderHTML(request, env, overrideData = null, dataType = "") {
             html = await assetsResponse.text();
         } else {
             html = await env.GET_GITHUB_JSON.fetchGitHubRawData("html");
+            console.log("Get HTML fallback data");
         }
     }
     if (!json) { 
         json = await env.GET_GITHUB_JSON.fetchGitHubRawData("json");
+        console.log("Get JSON fallback data");
     }
     
     if (!json || !html) {
@@ -77,7 +79,7 @@ export default {
         const url = new URL(request.url);
 
         if (request.method === "POST") {
-            if (url.hostname !== "internal" && url.pathname !== "/render") {
+            if (url.hostname !== "internal" || url.pathname !== "/render") {
                 return new Response("Not Found", { status: 404 });
             }
             const clientApiKey = request.headers.get("X-API-Key");
