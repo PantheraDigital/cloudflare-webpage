@@ -69,7 +69,7 @@ async function renderHTML(request, env, overrideData = null, dataType = "") {
     }).join('\n');
 
     return html.replace("<!--placeholder-projects-data-->", projectHTML)
-                        .replace("<!--placeholder-posts-data-->", postHTML);
+                .replace("<!--placeholder-posts-data-->", postHTML);
 }
 
 // GET - public get asset
@@ -88,7 +88,6 @@ export default {
             }
 
             try {
-                const renderedHTML = await env.WEBPAGE_KV.get("html_render");
                 let contentType = request.headers.get('content-type');
                 let overrideData = null;
 
