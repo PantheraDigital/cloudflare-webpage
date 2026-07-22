@@ -1,3 +1,5 @@
+import entryTemplate from "./templates/entry-template.html";
+
 function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, tags, description }) {
     const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
     const tagsData = tags && tags.length > 0 ? tags.join(',') : '';
@@ -11,6 +13,24 @@ function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, 
             ${tagsText ? `<p name="tags">${tagsText}</p>` : ''}
         </div>
     </details>`;
+}
+
+// ai
+function renderHTMLTemplate(template, data) {
+  const regex = /\$\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}/g;
+  const keys = Object.keys(data);
+  const values = Object.values(data);
+
+  return template.replace(regex, (match, expression) => {
+    try {
+      const evaluator = new Function(...keys, `return ${expression.trim()};`);
+      const result = evaluator(...values);
+      return result !== undefined && result !== null ? result : '';
+    } catch (e) {
+      console.warn(`Failed to evaluate expression: "${expression}"`, e);
+      return '';
+    }
+  });
 }
 
 async function renderHTML(request, env, overrideData = null, dataType = "") {
@@ -111,6 +131,21 @@ export default {
             }
             
         } else if (request.method === "GET") {
+            if (url.pathname === "test") {
+                try {
+                    const json = await env.WEBPAGE_KV.get("json");
+                    let result = "";
+
+                    for (const key in json) {
+                        result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
+                    }
+
+                    return new Response(result);
+                } catch (error) {
+                    return new Response(`Test failure: ${error.message}`);
+                }
+            }
+
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
                 return env.ASSETS.fetch(request);
             }
