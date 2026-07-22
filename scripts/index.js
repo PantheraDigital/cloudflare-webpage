@@ -17,20 +17,103 @@ function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, 
 
 // ai
 function renderHTMLTemplate(template, data) {
-  const regex = /\$\{((?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*)\}/g;
   const keys = Object.keys(data);
   const values = Object.values(data);
 
-  return template.replace(regex, (match, expression) => {
-    try {
-      const evaluator = new Function(...keys, `return ${expression.trim()};`);
-      const result = evaluator(...values);
-      return result !== undefined && result !== null ? result : '';
-    } catch (e) {
-      console.warn(`Failed to evaluate expression: "${expression}"`, e);
-      return '';
+  // Helper to safely resolve a single variable or literal value
+  function resolveValue(token) {
+    token = token.trim();
+    // Handle string literals (e.g., 'hello' or "hello")
+    if ((token.startsWith("'") && token.endsWith("'")) || (token.startsWith('"') && token.endsWith('"'))) {
+      return token.slice(1, -1);
     }
-  });
+    // Handle booleans/null
+    if (token === 'true') return true;
+    if (token === 'false') return false;
+    if (token === 'null' || token === 'undefined') return '';
+    // Handle numeric literals
+    if (!isNaN(Number(token))) return Number(token);
+    
+    // Handle object key lookups
+    return data.hasOwnProperty(token) ? data[token] : '';
+  }
+
+  // Safe expression evaluator (Handles simple variables & single-level ternaries)
+  function safeEval(expr) {
+    expr = expr.trim();
+
+    // Check if expression is a ternary: condition ? trueVal : falseVal
+    const ternaryMatch = expr.match(/^(.+?)\?(.*):(.*)$/);
+
+    if (ternaryMatch) {
+      const conditionExpr = ternaryMatch[1].trim();
+      const trueExpr = ternaryMatch[2].trim();
+      const falseExpr = ternaryMatch[3].trim();
+
+      // Evaluate truthiness of condition
+      const conditionValue = resolveValue(conditionExpr);
+      const isTruthy = Array.isArray(conditionValue) ? conditionValue.length > 0 : Boolean(conditionValue);
+
+      const chosenExpr = isTruthy ? trueExpr : falseExpr;
+
+      // Check if chosen branch contains nested template literals (`...`)
+      if (chosenExpr.startsWith('`') && chosenExpr.endsWith('`')) {
+        const innerContent = chosenExpr.slice(1, -1);
+        // Recursively evaluate any ${var} found inside the string
+        return renderHTMLTemplate(innerContent, data);
+      }
+
+      return resolveValue(chosenExpr);
+    }
+
+    // Standard variable lookup (e.g., "entryGroup" or "tags.join(', ')")
+    if (expr.includes('.join(')) {
+      const [arrName, glue] = expr.split('.join(');
+      const cleanGlue = glue.replace(/['"`)]/g, '');
+      const arr = data[arrName.trim()];
+      return Array.isArray(arr) ? arr.join(cleanGlue) : '';
+    }
+
+    return resolveValue(expr);
+  }
+
+  // Bracket depth tracking parser (no eval, no risky regex boundary issues)
+  let result = '';
+  let i = 0;
+
+  while (i < template.length) {
+    if (template[i] === '$' && template[i + 1] === '{') {
+      const startIdx = i + 2;
+      let braceDepth = 1;
+      let inString = null;
+      let j = startIdx;
+
+      while (j < template.length && braceDepth > 0) {
+        const char = template[j];
+        const prevChar = template[j - 1];
+
+        if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
+          if (inString === null) inString = char;
+          else if (inString === char) inString = null;
+        }
+
+        if (!inString) {
+          if (char === '{') braceDepth++;
+          if (char === '}') braceDepth--;
+        }
+        j++;
+      }
+
+      const expression = template.substring(startIdx, j - 1);
+      result += safeEval(expression);
+      i = j;
+    } else {
+      result += template[i];
+      i++;
+    }
+  }
+
+  return result;
 }
 
 async function renderHTML(request, env, overrideData = null, dataType = "") {
@@ -134,9 +217,9 @@ export default {
             if (url.pathname === "/test") {
                 try {
                     const json = await env.WEBPAGE_KV.get("json");
-                    let result = "";
+                    let result = "Template:\n" + entryTemplate + "\n\nOutput:\n";
 
-                    for (const key in json) {
+                    for (const key of json) {
                         result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
                     }
 
