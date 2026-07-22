@@ -216,17 +216,32 @@ export default {
         } else if (request.method === "GET") {
             if (url.pathname === "/test") {
                 try {
-                    const json = await env.WEBPAGE_KV.get("json");
+                    // 1. Pass { type: "json" } so Cloudflare parses the JSON string automatically
+                    const json = await env.WEBPAGE_KV.get("json", { type: "json" });
+
+                    if (!json) {
+                        return new Response("Test failure: KV key 'json' returned null or empty.");
+                    }
+
                     let result = "Template:\n" + entryTemplate + "\n\nOutput:\n";
 
-                    for (const key of json) {
+                    // 2. Iterate safely based on whether KV contains an Array or an Object
+                    if (Array.isArray(json)) {
+                        // If 'json' is an Array: [ { entryGroup: "..." }, { ... } ]
+                        for (const item of json) {
+                        result += renderHTMLTemplate(entryTemplate, item) + "\n\n";
+                        }
+                    } else {
+                        // If 'json' is an Object: { entry1: { ... }, entry2: { ... } }
+                        for (const key of Object.keys(json)) {
                         result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
+                        }
                     }
 
                     return new Response(result);
-                } catch (error) {
+                    } catch (error) {
                     return new Response(`Test failure: ${error.message}`);
-                }
+                    }
             }
 
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
