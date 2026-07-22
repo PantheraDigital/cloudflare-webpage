@@ -159,14 +159,14 @@ async function renderHTML(request, env, overrideData = null, dataType = "") {
     count = 0;
     const projectHTML = projectEntries.map(([title, entry], idx) => {
         const htmlDesc = htmlDescJson[count++];
-        return projectTemplate({
+        return renderHTMLTemplate(entryTemplate, {
             entryGroup: "projects", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
         });
     }).join('\n');
 
     const postHTML = postEntries.map(([title, entry], idx) => {
         const htmlDesc = htmlDescJson[count++];
-        return projectTemplate({
+        return renderHTMLTemplate(entryTemplate, {
             entryGroup: "posts", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
         });
     }).join('\n');
