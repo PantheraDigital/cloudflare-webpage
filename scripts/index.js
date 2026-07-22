@@ -216,7 +216,6 @@ export default {
         } else if (request.method === "GET") {
             if (url.pathname === "/test") {
                 try {
-                    // 1. Pass { type: "json" } so Cloudflare parses the JSON string automatically
                     const json = await env.WEBPAGE_KV.get("json", { type: "json" });
 
                     if (!json) {
@@ -224,28 +223,15 @@ export default {
                     }
 
                     let result = "Template:\n" + entryTemplate + "\n\nOutput:\n";
-
-                    // 2. Iterate safely based on whether KV contains an Array or an Object
-                    if (Array.isArray(json)) {
-                        result += "json is array\n";
-                        // If 'json' is an Array: [ { entryGroup: "..." }, { ... } ]
-                        for (const item of json) {
-                            result += "JSON:\n" + item + "\nHTML:\n";
-                            result += renderHTMLTemplate(entryTemplate, item) + "\n\n";
-                        }
-                    } else {
-                        result += "json is not array\n";
-                        // If 'json' is an Object: { entry1: { ... }, entry2: { ... } }
-                        for (const key of Object.keys(json)) {
-                            result += "JSON:\n" + key + "\nHTML:\n";
-                            result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
-                        }
+                    for (const key of Object.keys(json.Projects)) {
+                        result += "JSON:\n" + json.Projects[key] + "\nHTML:\n";
+                        result += renderHTMLTemplate(entryTemplate, json.Projects[key]) + "\n\n";
                     }
 
                     return new Response(result);
-                    } catch (error) {
+                } catch (error) {
                     return new Response(`Test failure: ${error.message}`);
-                    }
+                }
             }
 
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
