@@ -235,6 +235,13 @@ export default {
                 } catch (error) {
                     return new Response(`Test failure: ${error.message}`);
                 }
+            } else if (url.pathname === "/test-render") {
+                try {
+                    const newHTML = await renderHTML(request, env);
+                    return new Response(newHTML, {headers: { "Content-Type": "text/html;charset=UTF-8" }});
+                } catch (error) {
+                    return new Response(`Test render failure: ${error.message}`);
+                }
             }
 
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
