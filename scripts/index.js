@@ -131,7 +131,7 @@ export default {
             }
             
         } else if (request.method === "GET") {
-            if (url.pathname === "test") {
+            if (url.pathname === "/test") {
                 try {
                     const json = await env.WEBPAGE_KV.get("json");
                     let result = "";
