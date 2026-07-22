@@ -224,8 +224,11 @@ export default {
 
                     let result = "Template:\n" + entryTemplate + "\n\nOutput:\n";
                     for (const key of Object.keys(json.Projects)) {
-                        result += "JSON:\n" + json.Projects[key] + "\nHTML:\n";
-                        result += renderHTMLTemplate(entryTemplate, json.Projects[key]) + "\n\n";
+                        const entry = json.Projects[key];
+                        result += "JSON:\n" + JSON.stringify(entry) + "\nHTML:\n";
+                        result += renderHTMLTemplate(entryTemplate, {
+                            entryGroup: "projects", entryIndex: 1, title:key, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: entry.description
+                        }) + "\n\n";
                     }
 
                     return new Response(result);
