@@ -5,6 +5,7 @@ function addSortBars(allEntryTags){
         const pageContent = (page) ? page.querySelector('section.main-content') : null;
         if (!pageContent) { continue; }
 
+        const pageTitle = pageContent.querySelector("h2");
         const tagSelector = document.importNode(tagSelectorTemplate.content, true);
         const label = tagSelector.querySelector("label");
         const labelContainer = tagSelector.querySelector("span");
@@ -16,15 +17,26 @@ function addSortBars(allEntryTags){
         input.setAttribute("name", tagGroup + "-sort");
         input.setAttribute("value", "None");
         input.setAttribute("checked", "");
-        input.addEventListener("change", ()=>{
-                sortPageEntries(container, sortEntriesByIndex);
+        input.addEventListener("change", (event)=>{
+                container.querySelectorAll("hr")?.forEach((element)=>{element.remove()});
+                
+                sortPageEntries(
+                    container, 
+                    sortEntriesByIndex,
+                    null
+                );
+
+                const titleSort = pageTitle.innerText.indexOf(" / ");
+                if (titleSort !== -1) {
+                    pageTitle.innerText = pageTitle.innerText.substring(0, titleSort);
+                }
             });
         
         for (const tag of allEntryTags[tagGroup]){
             const labelClone = document.importNode(label, true);
             const input = labelClone.querySelector("input");
 
-            labelClone.querySelector("span").textContent = tag + " ";
+            labelClone.querySelector("span").textContent = tag;
 
             labelClone.setAttribute("for", tagGroup + tag);
             input.setAttribute("id", tagGroup + tag);
@@ -32,21 +44,43 @@ function addSortBars(allEntryTags){
             input.setAttribute("value", tag);
             input.removeAttribute("checked");
 
-            input.addEventListener("change", ()=>{
-                sortPageEntries(container, (a,b)=>{return sortEntriesByTag(a,b,tag);});
+            input.addEventListener("change", (event)=>{
+                container.querySelectorAll("hr")?.forEach((element)=>{element.remove()});
+
+                let hrAdded = false;
+                sortPageEntries(
+                    container, 
+                    (a,b)=>{return sortEntriesByTag(a,b,tag);},
+                    (entry)=>{
+                        const tags = entry.getAttribute("data-tags");
+                        if (!tags.includes(tag) && !hrAdded) {
+                            container.insertAdjacentElement("beforeend", document.createElement("hr"));
+                            hrAdded = true;
+                        }
+                    }
+                );
+
+                const titleSort = pageTitle.innerText.indexOf(" / ");
+                if (titleSort === -1) {
+                    pageTitle.innerText += " / " + tag;
+                } else {
+                    pageTitle.innerText = pageTitle.innerText.substring(0, titleSort + 3) + tag;
+                }
             });
 
             labelContainer.appendChild(labelClone);
+            labelContainer.appendChild(document.createTextNode(" "));
         }
 
         pageContent.appendChild(tagSelector);
     }
 }
 
-function sortPageEntries(page, sortFunc){
+function sortPageEntries(page, sortFunc, highlightFunc){
     const entries = Array.from(page.querySelectorAll(".project-details"));
     entries.sort(sortFunc);
     for (const entry of entries){
+        if (highlightFunc) { highlightFunc(entry); }
         page.insertAdjacentElement("beforeend", entry);
     }
 }
@@ -76,47 +110,19 @@ function sortEntriesByIndex(a,b){
 }
 
 
-async function initPage() {
-    let allEntryTags = {};
-    const projects = document.querySelector('#projects-container').querySelectorAll(".project-details");
-    const posts = document.querySelector('#posts-container').querySelectorAll(".project-details");
-
-    let tagGroup = "projects";
-    for (const entry of projects) {
-        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
-        let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
-        allEntryTags[tagGroup] = new Set(newSet);
-    }
-
-    tagGroup = "posts";
-    for (const entry of posts) {
-        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
-        let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
-        allEntryTags[tagGroup] = new Set(newSet);
-    }
-
-    addSortBars(allEntryTags);
-}
-initPage();
-
-
-
-/*
-  slide list
-*/
 let slides = document.getElementById("slide-list").children;
 let activeSlideIndex = 0;
-
-for (let i = 0; i < slides.length; i++) {
-	if (i != activeSlideIndex) {
-		slides[i].classList.add("slide-right");
-	}
-}
-
-function navigateToSlide(index) {
+let prevClickedNav = null;
+function navigateToSlide(clickedElement, index) {
 	if (index == activeSlideIndex || index > slides.length) {
 		return;
 	}
+
+    clickedElement.classList.add("selected");
+    if (prevClickedNav) {
+        prevClickedNav.classList.remove("selected");
+    }
+    prevClickedNav = clickedElement;
 
 	let active = slides[activeSlideIndex];
 	let newActive = slides[index];
@@ -141,3 +147,61 @@ function navigateToSlide(index) {
 	newActive.classList.remove("slide-right");
 	activeSlideIndex = index;
 }
+
+
+function initPage() {
+    // nav buttons
+    document.querySelectorAll('.nav-button').forEach((element) => {
+        if (element.getAttribute("href") === "#about") { 
+            prevClickedNav = element;
+            element.classList.add("selected"); 
+        }
+        element.setAttribute("href", "#main")
+    });
+
+    // background behaviour
+    document.querySelector('#bg-layer').querySelector(".crt3").style.position = "absolute";
+
+    // slide list
+    for (let i = 0; i < slides.length; i++) {
+        if (i != activeSlideIndex) {
+            slides[i].classList.add("slide-right");
+        }
+        slides[i].classList.add("slide-element");
+    }
+    document.querySelector('#main').style.overflow = "hidden";
+
+    // entry sorting
+    let allEntryTags = {};
+    const projects = document.querySelector('#projects-container').querySelectorAll(".project-details");
+    const posts = document.querySelector('#posts-container').querySelectorAll(".project-details");
+
+    let tagGroup = "projects";
+    for (const entry of projects) {
+        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
+        let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
+        allEntryTags[tagGroup] = new Set(newSet);
+
+        // remove temp img bg
+        const img = entry.querySelector("img");
+        if (img) {
+            img.addEventListener("load", (event) => { img.removeAttribute("style"); });
+        }
+    }
+
+    tagGroup = "posts";
+    for (const entry of posts) {
+        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
+        let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
+        allEntryTags[tagGroup] = new Set(newSet);
+    
+        // remove temp img bg
+        const img = entry.querySelector("img");
+        if (img) {
+            img.addEventListener("load", (event) => { img.removeAttribute("style"); });
+        }
+    }
+
+    addSortBars(allEntryTags);
+}
+initPage();

@@ -16,42 +16,159 @@
     <meta property="og:url" content="https://cloudflare-webpage.panthera-digital.workers.dev/">
     
     <style>
-        /*Logo Style*/
         :root{
-            --logo-size: 300px;
+        /* logo */
+        --logo-size: 300px;
+        /* day/night toggle */
+        --day-toggle-bg: rgb(227, 228, 236);
+        --day-toggle-border: rgb(128, 128, 128);
+        --day-toggle-switch-bg: rgb(243, 231, 139);
+        --day-toggle-switch-border: rgb(231, 214, 60);
+        --night-toggle-bg: rgb(47, 47, 77);
+        --night-toggle-border: rgb(63, 63, 161);
+        --night-toggle-switch-bg: rgb(197, 198, 206);
+        --night-toggle-switch-border: rgb(227, 228, 236);
+        /* crt */
+        --crt-red: rgb(218, 49, 49);
+        --crt-green: rgb(112, 159, 115);
+        --crt-blue: rgb(40, 129, 206);
         }
 
+        html{
+        scroll-behavior: smooth;
+        }
+
+        html,
+        body {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        background-color: #000;
+        }
+
+        body {
+        font-family: monospace;
+        }
+        body a{
+        white-space: normal;
+        overflow-wrap: break-word;
+        }
+        body p{
+        white-space: normal;
+        word-break: normal;
+        }
+
+        /*
+        *      Day/Night Toggle
+        */
+        .display-toggle{
+        appearance: none;
+        width: 0;
+        height: 0;
+        position: absolute;
+        }
+
+        .display-toggle-lable {
+        width: 100px;
+        height: 50px;
+        background: var(--day-toggle-bg);
+        border-radius: 100px;
+        border: 3px solid var(--day-toggle-border);
+        display: flex;
+        position: relative;
+        float: right;
+        margin: 10px;
+        transition: background-color 350ms ease-in, border-color 350ms ease-in;
+        }
+        .display-toggle-lable:before {
+        animation-name: reverse;
+        animation-duration: 350ms;
+        animation-fill-mode: forwards;
+        transition: background-color 350ms ease-in, border-color 350ms ease-in;
+        content: "";
+        box-sizing: border-box;
+        width: 46px;
+        height: 46px;
+        border: 3px solid var(--day-toggle-switch-border);
+        top: 2px;
+        left: 3px;
+        position: absolute;
+        border-radius: 50%;
+        background: var(--day-toggle-switch-bg);
+        }
+        
+        .display-toggle:checked + .display-toggle-lable {
+        background: var(--night-toggle-bg);
+        border-color: var(--night-toggle-border);
+        }
+        .display-toggle:checked + .display-toggle-lable:before {
+        background: var(--night-toggle-switch-bg);
+        border-color: var(--night-toggle-switch-border);
+        animation-name: switch;
+        animation-duration: 350ms;
+        animation-fill-mode: forwards;
+        }
+        
+        .display-toggle:focus-visible + .display-toggle-lable:after{
+        content: " ";
+        position: absolute;
+        inset: -6px;
+        border-radius: 100px;
+        border: 3px solid #FF8C00;
+        border-color: Highlight;
+        box-sizing: border-box;
+        transition: none;
+        }
+
+        @keyframes switch {
+        0% {
+            left: 3px;
+        }
+        100% {
+            left: 51px;
+        }
+        }
+        @keyframes reverse {
+        0% {
+            left: 51px;
+        }
+        100% {
+            left: 3px;
+        }
+        }
+
+        /*
+        *      Logo
+        */
         .logo-wrapper{
-            display: inline-block;
-            position: relative;
-            width: var(--logo-size);
-            height: var(--logo-size);
-            /*margin: 0 auto;*/
+        display: inline-block;
+        position: relative;
+        width: var(--logo-size);
+        height: var(--logo-size);
+        /*margin: 0 auto;*/
         }
 
         .logo-img{
-            height: calc(var(--logo-size) - 40px);
-            
-            z-index: 1;
-
-            position: absolute;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
+        height: calc(var(--logo-size) - 40px);
+        z-index: 1;
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
         }
 
         .logo-shape-wrapper{
-            filter: drop-shadow(0px 0px 5px #0044ff);
+        filter: drop-shadow(0px 0px 5px #0044ff);
         }
 
         .logo-shape{
-            display: inline-block;
-            box-sizing: border-box;
-            height: var(--logo-size);
-            width: var(--logo-size);
-            border-radius: 50%;
-            background-image: linear-gradient(in hsl 180deg, rgb(255, 100, 177) 25%, rgb(0, 255, 255) 90%);
-            animation: risingSquare 20s infinite reverse linear;
+        display: inline-block;
+        box-sizing: border-box;
+        height: var(--logo-size);
+        width: var(--logo-size);
+        border-radius: 50%;
+        background-image: linear-gradient(in hsl 180deg, rgb(255, 100, 177) 25%, rgb(0, 255, 255) 90%);
+        animation: risingSquare 20s infinite reverse linear;
         }
 
         @keyframes risingSquare {
@@ -174,39 +291,16 @@
             }
         }
 
-        /*Page Style*/
-        html{
-        scroll-behavior: smooth;
-        }
-
-        html,
-        body {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-        background-color: #000;
-        }
-
-        body {
-        font-family: monospace;
-        }
-        body a{
-        white-space: normal;
-        overflow-wrap: break-word;
-        }
-        body p{
-        white-space: normal;
-        word-break: normal;
-        }
-
-
+        /*
+        *      Projects / Posts
+        */
         .project-details{
         margin: 16px 0;
         white-space: normal; 
         word-wrap: break-word;
         overflow-wrap: break-word;
         }
-        .project-details:hover summary{
+        .project-details summary:hover{
         background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), transparent 80%);
         }
         .project-details img{
@@ -215,15 +309,15 @@
         .project-details p:first-child{
         margin-top: 0;
         }
+        
         .project-body{
         background-color: rgba(0, 0, 0, 0.0);
         border-bottom: solid black 1px;
         }
 
-
         @media only screen and (max-width: 500px) {
         .text-list{
-            padding-left: 20px;
+        padding-left: 20px;
         }
         }
 
@@ -240,42 +334,42 @@
         overflow: hidden;
         }
         .main-block::before {
-            --solid-x: 150px;
-            --solid-y: 150px;
-            --border-style: solid;
-            --highlight-color: rgb(128, 128, 128);
-            --global-border-gap: 5px;
-            --global-border-width: 3px;
-            /*#9ba2b8;*/
+        --solid-x: 150px;
+        --solid-y: 150px;
+        --border-style: solid;
+        --highlight-color: rgb(128, 128, 128);
+        --global-border-gap: 5px;
+        --global-border-width: 3px;
+        /*#9ba2b8;*/
 
-            content: "";
-            position: absolute;
-            inset: 0;
-            border: var(--global-border-width) var(--highlight-color) var(--border-style);
-            /*background-image: linear-gradient(in hsl to bottom right, magenta 5%, cyan, magenta 95%);*/
-            
-            clip-path: border-box polygon(0 0, 0 100%, var(--global-border-width) var(--solid-y), var(--global-border-width) var(--global-border-width),
-            var(--solid-x) var(--global-border-width), 100% 0,
-            calc(100% - var(--global-border-width)) calc(100% - var(--solid-y)), calc(100% - var(--global-border-width)) calc(100% - var(--global-border-width)),
-            calc(100% - var(--solid-x)) calc(100% - var(--global-border-width)), 0 100%, 100% 100%, 100% 0);
+        content: "";
+        position: absolute;
+        inset: 0;
+        border: var(--global-border-width) var(--highlight-color) var(--border-style);
+        /*background-image: linear-gradient(in hsl to bottom right, magenta 5%, cyan, magenta 95%);*/
+        
+        clip-path: border-box polygon(0 0, 0 100%, var(--global-border-width) var(--solid-y), var(--global-border-width) var(--global-border-width),
+        var(--solid-x) var(--global-border-width), 100% 0,
+        calc(100% - var(--global-border-width)) calc(100% - var(--solid-y)), calc(100% - var(--global-border-width)) calc(100% - var(--global-border-width)),
+        calc(100% - var(--solid-x)) calc(100% - var(--global-border-width)), 0 100%, 100% 100%, 100% 0);
         }
         @media only screen and (max-width: 500px) {
         .main-block {
-            margin: 0 20px;
+        margin: 0 20px;
         }
         }
 
         .main-content{
-            background-color: rgb(227, 228, 236); 
-            box-shadow: rgb(227, 228, 236) 0 0 3px 3px; 
-            width: 100%; 
-            height: 100%; 
-            overflow-x: hidden;
-            overflow-y: auto; 
-            position: relative; 
-            top: 0;
-            display: flex; 
-            flex-direction: column;
+        background-color: rgb(227, 228, 236); 
+        box-shadow: rgb(227, 228, 236) 0 0 3px 3px; 
+        width: 100%; 
+        height: 100%; 
+        overflow-x: hidden;
+        overflow-y: auto; 
+        position: relative; 
+        top: 0;
+        display: flex; 
+        flex-direction: column;
         }
 
         .main-content h2, .main-content h3{
@@ -286,7 +380,9 @@
         border-image: linear-gradient(90deg, grey, transparent 90%) 1;
         } 
 
-
+        /*
+        *      Slide Elements
+        */
         .slide-list{
         position: absolute; 
         bottom: 10%; 
@@ -297,11 +393,12 @@
         }
         @media only screen and (max-width: 500px) {
         .slide-list{
-            bottom: 4%; 
+        bottom: 4%; 
         }
         }
         .slide-element{
-        display: inline-block;
+        display: inline-flex; 
+        justify-content: center; 
         position: absolute; 
         left: 0;
         width: 100%; 
@@ -322,13 +419,16 @@
         pointer-events: none;
         }
 
-
+        /*
+        *      Nav Buttons
+        */
         .button{
         font-size: 1rem;
         font-family: monospace;
         width: 10ch;
         padding: 2px;
         }
+
         .nav-button{
         display: inline-block;
         box-sizing: border-box;
@@ -344,41 +444,55 @@
         text-decoration: none;
         }
         .nav-button:hover{
-        background-color: rgb(217, 218, 226);
+        background-color: rgb(207, 208, 216);
         }
         .nav-button:active{
-        background-color: rgb(247, 248, 246);
+        background-color: rgb(177, 178, 186);
         }
 
+        .nav-button.selected{
+        background-color: rgb(267, 268, 276);
+        text-decoration: underline;
+        }
 
-        .display-toggle{
-        appearance: none;
-        width: 0;
+        /*
+        *      Background
+        */
+        .hide{
+        display: none;
+        }
+        @-moz-document url-prefix() {
+        .hide{
+        display: block;
+        position: absolute;
         height: 0;
+        width: 0;
         }
-        .display-toggle-lable{
-        position:absolute; 
-        right: 15px; 
-        top: 15px; 
-        height: 50px; 
-        width: 50px;
-        border-radius: 50%;
-        background-color: rgb(239, 239, 239);
-        border: 1px solid grey;
         }
-        .display-toggle-lable:hover{
-        background-color: lightgrey;
-        }
-        .display-toggle-lable:has(.display-toggle:checked){
-        background-color: yellow;
-        }
-
 
         .noise{
         filter: url("#noiseFilter") contrast(2);
         mix-blend-mode:soft-light;
         }
 
+        .crt3::after{
+        content: " ";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+        background: 
+        repeating-linear-gradient(-90deg,
+            var(--crt-red) 0px,
+            var(--crt-red) 1px,
+            var(--crt-green) 1px,
+            var(--crt-green) 2px,
+            var(--crt-blue) 2px,
+            var(--crt-blue) 3px,
+            rgba(0, 0, 0, 0.25) 3px,
+            rgba(0, 0, 0, 0.25) 4px);
+        }
 
 
         .arch-bg{
@@ -409,42 +523,29 @@
         top: -75%;
         transform: perspective(1000px) rotateX(80deg) translateZ(-150px) translateY(-10%);
         background:
-        repeating-linear-gradient(90deg, 
-        transparent 0, rgba(255, 0, 255, 0.5) 2px, rgba(0, 255, 255, 0.75) 3px, transparent 5px, transparent 50px),
-        repeating-linear-gradient(180deg, 
-        transparent 0, rgba(255, 0, 255, 0.5) 2px, rgba(0, 255, 255, 0.75) 3px, transparent 5px, transparent 50px),
-        linear-gradient(transparent, lavender);
+            repeating-linear-gradient(90deg, 
+            transparent 0, rgba(255, 0, 255, 0.5) 2px, rgba(0, 255, 255, 0.75) 3px, transparent 5px, transparent 50px),
+            repeating-linear-gradient(180deg, 
+            transparent 0, rgba(255, 0, 255, 0.5) 2px, rgba(0, 255, 255, 0.75) 3px, transparent 5px, transparent 50px),
+            linear-gradient(transparent, lavender);
         }
 
         #bg-layer:has(.display-toggle:checked) .gradient-bg{
         background: linear-gradient(transparent), 
-        radial-gradient(70% 30% at 50% 40%, purple 0%, transparent 80%), 
-        radial-gradient(80% 50% at 50% 40%, midnightblue 20%, black 100%);
+            radial-gradient(70% 30% at 50% 40%, purple 0%, transparent 80%), 
+            radial-gradient(80% 50% at 50% 40%, midnightblue 20%, black 100%);
         }
         #bg-layer:has(.display-toggle:checked) .gradient-bg-lower{
         background: linear-gradient(black, midnightblue 40%);
         }
         #bg-layer:has(.display-toggle:checked) .gradient-bg-lower::before{
         background: 
-        linear-gradient(midnightblue 0%, transparent 50%), 
-        repeating-linear-gradient(90deg, 
-        transparent 0, rgba(0, 255, 255, 0.5) 2px, rgba(255, 0, 255, 0.75) 3px, transparent 5px, transparent 50px),
-        repeating-linear-gradient(180deg, 
-        transparent 0, rgba(0, 255, 255, 0.5) 2px, rgba(255, 0, 255, 0.75) 3px, transparent 5px, transparent 50px),
-        linear-gradient(transparent 60%, navy);
-        }
-
-
-        #filters{
-        display: none;
-        }
-        @-moz-document url-prefix() {
-        #filters{
-            display: block;
-            position: absolute;
-            height: 0;
-            width: 0;
-        }
+            linear-gradient(midnightblue 0%, transparent 50%), 
+            repeating-linear-gradient(90deg, 
+            transparent 0, rgba(0, 255, 255, 0.5) 2px, rgba(255, 0, 255, 0.75) 3px, transparent 5px, transparent 50px),
+            repeating-linear-gradient(180deg, 
+            transparent 0, rgba(0, 255, 255, 0.5) 2px, rgba(255, 0, 255, 0.75) 3px, transparent 5px, transparent 50px),
+            linear-gradient(transparent 60%, navy);
         }
 
 
@@ -457,8 +558,8 @@
         }
         @media only screen and (max-width: 500px) {
         .main-cloud {
-            top: 31%;
-            height: 155px;
+        top: 31%;
+        height: 155px;
         }
         }
         .cloud::before{
@@ -478,52 +579,12 @@
             400px 400px 25px 5px lavenderblush,
             400px 400px 40px 10px rgba(0, 0, 0, 0.1);
         }
-
-
-        :root {
-        --crt-red: rgb(218, 49, 49);
-        --crt-green: rgb(112, 159, 115);
-        --crt-blue: rgb(40, 129, 206);
-        }
-
-        .crt3::after{
-        content: " ";
-        position: absolute;
-        inset: 0;
-        z-index: 2;
-        pointer-events: none;
-        mix-blend-mode: overlay;
-        background: 
-        repeating-linear-gradient(-90deg,
-            var(--crt-red) 0px,
-            var(--crt-red) 1px,
-            var(--crt-green) 1px,
-            var(--crt-green) 2px,
-            var(--crt-blue) 2px,
-            var(--crt-blue) 3px,
-            rgba(0, 0, 0, 0.25) 3px,
-            rgba(0, 0, 0, 0.25) 4px);
-        }
-
-
     </style>
 </head>
 
 <body>
-    <template id="project-template">
-        <details class="project-details">
-            <summary>
-                Title
-            </summary>
-            <div class="project-body">
-                <img src="" alt="" loading="lazy"><br>
-                <a href="" aria-label="Project Link"></a>
-                <p name="tags">tags: </p>
-            </div>
-        </details>
-    </template>
     <template id="tag-selector-template">
-        <div style="text-align: right; margin: 0 5px; padding: 13px 0; border-top: 2px solid grey; border-image: linear-gradient(270deg, grey, transparent 90%) 1;">
+        <div style="position: sticky; bottom: 0; text-align: right; margin: 0 5px 0 0; padding: 13px 0 0 0; background-color: inherit; border-top: 2px solid grey; border-image: linear-gradient(270deg, grey, transparent 90%) 1;">
             <fieldset style="border: none; min-width: 100%; min-inline-size: 100%; box-sizing: border-box;">
                 <legend style="display: inline-block; width: 100%;"><b>sort</b></legend>
                 <span style="display: inline-block; width: 100%; overflow-x: auto; padding-bottom: 10px;">
@@ -535,7 +596,7 @@
 
     <span id="bg-layer">
         <span class="crt3"
-        style="position: absolute; width: 100%; height: 200%; top: 0; isolation: isolate; overflow: hidden;">
+        style="position: fixed; width: 100%; height: 200%; top: 0; isolation: isolate; overflow: hidden;">
             <span
             style="position: absolute; width: 100%; height: 50%; top: 0;"
             class="gradient-bg">
@@ -551,10 +612,9 @@
             <span class="noise" style="position: absolute; inset: 0;"></span>
             <span class="cloud main-cloud"></span>
         </span>
-        <label class="display-toggle-lable" for="display-mode-toggle">
-            <input type="checkbox" id="display-mode-toggle" class="display-toggle"
-            style="position: absolute; height: 50px; width: 50px; margin: 0;" />
-        </label>
+        
+        <input type="checkbox" id="display-mode-toggle" class="display-toggle">
+        <label for="display-mode-toggle" class="display-toggle-lable"></label>
     </span>
     <span style="pointer-events: none; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;">
         <span class="logo-wrapper" >
@@ -568,44 +628,16 @@
     <div style="width: 100%; height: 200%;">
         <div style="width: 100%; height: 85vh; height: 85dvh;"></div>
         <nav style="z-index: 1; position: sticky; top: 0; text-align: center; padding-top: 4vh;">
-            <a href="#main" class="nav-button" onclick="navigateToSlide(0)">Projects</a>
-            <a href="#main" class="nav-button" onclick="navigateToSlide(1)">Posts</a>
-            <a href="#main" class="nav-button" onclick="navigateToSlide(2)">About</a>
+            <a href="#about" class="nav-button" onclick="navigateToSlide(this, 0)">About</a>
+            <a href="#projects" class="nav-button" onclick="navigateToSlide(this, 1)">Projects</a>
+            <a href="#posts" class="nav-button" onclick="navigateToSlide(this, 2)">Posts</a>
         </nav>
     </div>
 
-    <main id="main" style="position: relative; top: -100%; width: 100%; height: 100%; overflow: hidden;">        
+    <main id="main" style="position: relative; top: -100%; width: 100%; height: 100%;">        
         <div id="slide-list" class="slide-list">
 
-            <div id="projects"
-            class="slide-element"
-            style="display:inline-flex; justify-content: center; position: absolute; width: 100%; height: 100%; left: 0px;">
-                <div class="main-block">
-                    <section class="main-content">
-                        <h2 style="margin-bottom: 0;">Projects</h2>
-                        <div id="projects-container" style="margin-left: 5px; flex-grow: 1;">
-                            <!--placeholder-projects-data-->
-                        </div>
-                    </section>
-                </div>
-            </div>
-            
-            <div id="posts"
-            class="slide-element"
-            style="display: inline-flex; justify-content: center; position: absolute; width: 100%; height: 100%; left: 0px;">
-                <div class="main-block">
-                    <section class="main-content">
-                        <h2 style="margin-bottom: 0;">Posts</h2>
-                        <div id="posts-container" style="margin-left: 5px; flex-grow: 1;">
-                            <!--placeholder-posts-data-->
-                        </div>
-                    </section>
-                </div>
-            </div>
-        
-            <div id="about"
-            class="slide-element"
-            style="display: inline-flex; justify-content: center; position: absolute; width: 100%; height: 100%; left: 0px;">
+            <div id="about">
                 <div class="main-block">
                     <section class="main-content" style="display: flex; flex-direction: column;">
                         <h2>About</h2>
@@ -621,9 +653,6 @@
                                         I started programming in 2016.
                                     </li>
                                     <li>
-                                        I like to collect certifications when I can.
-                                    </li>
-                                    <li>
                                         I enjoy exploring different domains of programming to learn.
                                     </li>
                                     <li>
@@ -634,11 +663,10 @@
                                     Video games got me into programming and now game development is my biggest hobby. It provides a creative outlet and source of learning. My focus has become developing character related systems (systems for any object that may be controlled by a player or ai during gameplay). Characters are just complex user interfaces to virtual worlds, and getting something complex to work is fun.
                                 </p>
                             </div>
-                            <div style="width: 50%; height: 30%; box-sizing: border-box; padding: 5px;
-                                border: none; border-top: 2px solid grey; border-left: 2px solid black;
-                                border-image: linear-gradient(to bottom left, grey, transparent 50%) 1;">
+                            <div style="width: 100%; height: 30%; box-sizing: border-box; padding: 5px;">
                                 <h3 style="font-size: medium; margin-top: 0; margin-left: 0;">contact</h3>
                                 <a href="mailto:pantheradigitalonline@gmail.com">pantheradigitalonline@gmail.com</a>
+                                <h3 style="font-size: medium; margin-left: 0;">links</h3>
                                 <ul class="text-list">
                                     <li><a href="https://github.com/PantheraDigital" target="_blank">GitHub</a></li>
                                     <li><a href="https://codepen.io/PantheraDigital" target="_blank">CodePen.io</a></li>
@@ -646,23 +674,28 @@
                                     <li><a href="https://www.fab.com/sellers/PantheraDigital" target="_blank">Fab</a></li>
                                 </ul>
                             </div>
-                            <div style="width: 50%; height: 30%; box-sizing: border-box; padding: 5px;
-                                border: none; border-top: 2px solid grey; border-left: 2px solid black;
-                                border-image: linear-gradient(to bottom right, grey, transparent 50%) 1;
-                                display: flex; flex-direction: column;">
-                                <h3 style="font-size: medium; margin-top: 0; margin-left: 0;">certs</h3>
-                                <ul style="flex: 1 1 100%; display: inline-flex; gap: 15px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 0; margin: 0;">
-                                    <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
-                                        <img style="height: 130px;" src="imgs/certs/PI.webp" alt="Python Institute Certification for proficiency in the Python programming language. Exam Code PCEP 30 02." loading="lazy">
-                                    </li>
-                                    <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
-                                        <img style="height: 130px;" src="imgs/certs/JSaDS.webp" alt="Free Code Camp Certification for JavaScript algorithms and data structures." loading="lazy">
-                                    </li>
-                                    <li style="list-style-type: none; scroll-snap-align: center; text-align: center;">
-                                        <img style="height: 130px;" src="imgs/certs/CS.webp" alt="Free Code Camp Certification for foundational C-Sharp with Microsoft." loading="lazy">
-                                    </li>
-                                </ul>
-                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <div id="projects">
+                <div class="main-block">
+                    <section class="main-content">
+                        <h2 style="margin-bottom: 0;">Projects</h2>
+                        <div id="projects-container" style="margin-left: 5px; margin-right: 5px; flex-grow: 1;">
+                            <!--placeholder-projects-data-->
+                        </div>
+                    </section>
+                </div>
+            </div>
+            
+            <div id="posts">
+                <div class="main-block">
+                    <section class="main-content">
+                        <h2 style="margin-bottom: 0;">Posts</h2>
+                        <div id="posts-container" style="margin-left: 5px; margin-right: 5px; flex-grow: 1;">
+                            <!--placeholder-posts-data-->
                         </div>
                     </section>
                 </div>
@@ -672,7 +705,7 @@
     </main>
 
 
-    <svg id="filters">
+    <svg id="filters" class="hide">
         <filter id='noiseFilter'>
             <feturbulence id="turbulence" 
             type='fractalNoise' baseFrequency='0.0025' numOctaves='4' seed="1" />
@@ -687,6 +720,5 @@
 
     <script src="scripts/frontend.js"></script>
 </body>
-    
 
 </html>

@@ -216,31 +216,9 @@ export default {
         } else if (request.method === "GET") {
             if (url.pathname === "/test") {
                 try {
-                    const json = await env.WEBPAGE_KV.get("json", { type: "json" });
-
-                    if (!json) {
-                        return new Response("Test failure: KV key 'json' returned null or empty.");
-                    }
-
-                    let result = "Template:\n" + entryTemplate + "\n\nOutput:\n";
-                    for (const key of Object.keys(json.Projects)) {
-                        const entry = json.Projects[key];
-                        result += "JSON:\n" + JSON.stringify(entry) + "\nHTML:\n";
-                        result += renderHTMLTemplate(entryTemplate, {
-                            entryGroup: "projects", entryIndex: 1, title:key, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: entry.description
-                        }) + "\n\n";
-                    }
-
-                    return new Response(result);
+                    throw new Error("No Tests.");
                 } catch (error) {
                     return new Response(`Test failure: ${error.message}`);
-                }
-            } else if (url.pathname === "/test-render") {
-                try {
-                    const newHTML = await renderHTML(request, env);
-                    return new Response(newHTML, {headers: { "Content-Type": "text/html;charset=UTF-8" }});
-                } catch (error) {
-                    return new Response(`Test render failure: ${error.message}`);
                 }
             }
 
