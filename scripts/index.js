@@ -237,7 +237,7 @@ export default {
                         result += "json is not array\n";
                         // If 'json' is an Object: { entry1: { ... }, entry2: { ... } }
                         for (const key of Object.keys(json)) {
-                            result += "JSON:\n" + item + "\nHTML:\n";
+                            result += "JSON:\n" + key + "\nHTML:\n";
                             result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
                         }
                     }
