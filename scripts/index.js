@@ -113,7 +113,7 @@ function renderHTMLTemplate(template, data) {
     }
   }
 
-  return result;
+  return result.split('\n').filter(line => line.trim() !== '').join('\n');
 }
 
 async function renderHTML(request, env, overrideData = null, dataType = "") {
