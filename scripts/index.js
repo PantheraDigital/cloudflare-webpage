@@ -1,4 +1,4 @@
-import entryTemplate from "./templates/entry-template.html";
+import entryTemplate from "templates/entry-template.html";
 
 function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, tags, description }) {
     const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
