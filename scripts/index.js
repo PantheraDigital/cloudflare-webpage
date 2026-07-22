@@ -227,14 +227,18 @@ export default {
 
                     // 2. Iterate safely based on whether KV contains an Array or an Object
                     if (Array.isArray(json)) {
+                        result += "json is array\n";
                         // If 'json' is an Array: [ { entryGroup: "..." }, { ... } ]
                         for (const item of json) {
-                        result += renderHTMLTemplate(entryTemplate, item) + "\n\n";
+                            result += "JSON:\n" + item + "\nHTML:\n";
+                            result += renderHTMLTemplate(entryTemplate, item) + "\n\n";
                         }
                     } else {
+                        result += "json is not array\n";
                         // If 'json' is an Object: { entry1: { ... }, entry2: { ... } }
                         for (const key of Object.keys(json)) {
-                        result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
+                            result += "JSON:\n" + item + "\nHTML:\n";
+                            result += renderHTMLTemplate(entryTemplate, json[key]) + "\n\n";
                         }
                     }
 
