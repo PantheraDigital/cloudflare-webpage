@@ -192,7 +192,7 @@ function initPage() {
 
     tagGroup = "posts";
     for (const entry of posts) {
-        const entryTags = entry.getAttribute("data-tags").split(",").map((element) => element = element.trim());
+        const entryTags = entry.parentElement.getAttribute("data-tags").split(",").map((element) => element = element.trim());
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
     
