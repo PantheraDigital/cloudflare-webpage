@@ -1,19 +1,5 @@
-import entryTemplate from "../templates/entry-template.html";
-
-function projectTemplate({ entryGroup, entryIndex, title, link, imgSrc, imgDes, tags, description }) {
-    const tagsText = tags && tags.length > 0 ? `tags: ${tags.join(', ')}` : '';
-    const tagsData = tags && tags.length > 0 ? tags.join(',') : '';
-    return `
-    <details class="project-details" name="${entryGroup}" data-tags="${tagsData}" data-original-index="${entryIndex}">
-        <summary>${title}</summary>
-        <div class="project-body">
-            ${imgSrc ? `<img src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
-            ${link ? `<a href="${link}" aria-label="Project Link">${link}</a>` : ''}
-            ${description ? description : ''}
-            ${tagsText ? `<p name="tags">${tagsText}</p>` : ''}
-        </div>
-    </details>`;
-}
+import projectTemplate from "../templates/project-template.html";
+import postTemplate from "../templates/post-template.html";
 
 // ai
 function renderHTMLTemplate(template, data) {
@@ -141,13 +127,16 @@ async function renderHTML(request, env, overrideData = null, dataType = "") {
     }
 
     const parsedJSON = JSON.parse(json);
-    const projectEntries = Object.entries(parsedJSON.Projects || {});
-    const postEntries = Object.entries(parsedJSON.Posts || {});
     const descJSON = {};
     let count = 0;
 
-    for (const [_, entry] of projectEntries) descJSON[count++] = entry.description || '';
-    for (const [_, entry] of postEntries) descJSON[count++] = entry.description || '';
+    for (const entry of parsedJSON.Projects) {
+        descJSON[count++] = entry.description || '';
+    }
+    for (const entry of parsedJSON.Posts) {
+        descJSON[count++] = entry.intro || '';
+        descJSON[count++] = entry.body || '';
+    }
 
     const mdResponse = await env.MARKDOWN_TO_HTML.fetch("https://internal", {
         method: "POST",
@@ -157,17 +146,18 @@ async function renderHTML(request, env, overrideData = null, dataType = "") {
     const htmlDescJson = await mdResponse.json();
     
     count = 0;
-    const projectHTML = projectEntries.map(([title, entry], idx) => {
+    const projectHTML = parsedJSON.Projects.map((entry, idx) => {
         const htmlDesc = htmlDescJson[count++];
-        return renderHTMLTemplate(entryTemplate, {
-            entryGroup: "projects", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
+        return renderHTMLTemplate(projectTemplate, {
+            entryIndex: idx, title: entry.title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
         });
     }).join('\n');
 
-    const postHTML = postEntries.map(([title, entry], idx) => {
-        const htmlDesc = htmlDescJson[count++];
-        return renderHTMLTemplate(entryTemplate, {
-            entryGroup: "posts", entryIndex: idx, title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
+    const postHTML = parsedJSON.Posts.map((entry, idx) => {
+        const htmlIntro = htmlDescJson[count++];
+        const htmlbody = htmlDescJson[count++];
+        return renderHTMLTemplate(postTemplate, {
+            entryIndex: idx, title: entry.title, intro: htmlIntro, body: htmlbody, tags: entry.tags
         });
     }).join('\n');
 
