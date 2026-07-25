@@ -174,7 +174,7 @@ function initPage() {
     // entry sorting
     let allEntryTags = {};
     const projects = document.querySelector('#projects-container').querySelectorAll(".project-details");
-    const posts = document.querySelector('#posts-container').querySelectorAll(".project-details");
+    const posts = document.querySelector('#posts-container').querySelectorAll(".post");
 
     let tagGroup = "projects";
     for (const entry of projects) {
