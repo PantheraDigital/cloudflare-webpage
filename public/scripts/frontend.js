@@ -22,6 +22,7 @@ function addSortBars(allEntryTags){
                 
                 sortPageEntries(
                     container, 
+                    Array.from(container.querySelectorAll(".entry")),
                     sortEntriesByIndex,
                     null
                 );
@@ -49,7 +50,8 @@ function addSortBars(allEntryTags){
 
                 let hrAdded = false;
                 sortPageEntries(
-                    container, 
+                    container,
+                    Array.from(container.querySelectorAll(".entry")),
                     (a,b)=>{return sortEntriesByTag(a,b,tag);},
                     (entry)=>{
                         const tags = entry.getAttribute("data-tags");
@@ -76,8 +78,7 @@ function addSortBars(allEntryTags){
     }
 }
 
-function sortPageEntries(page, sortFunc, highlightFunc){
-    const entries = Array.from(page.querySelectorAll(".project-details"));
+function sortPageEntries(page, entries, sortFunc, highlightFunc){
     entries.sort(sortFunc);
     for (const entry of entries){
         if (highlightFunc) { highlightFunc(entry); }
