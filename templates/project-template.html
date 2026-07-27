@@ -5,5 +5,6 @@
         ${link ? `<a href="${link}" aria-label="Project Link">${link}</a>` : ''}
         ${description ? description : ''}
         <p name="tags">tags: ${tags}</p>
+        <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')"/>
     </div>
 </details>
