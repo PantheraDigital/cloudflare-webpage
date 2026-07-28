@@ -62,6 +62,19 @@
         word-break: normal;
         }
 
+        code{
+            background-color: rgba(0, 0, 0, 0.1);
+            font-style: italic;
+        }
+        pre code{
+            background-color: rgba(0, 0, 0, 0);
+        }
+        pre:has(code){
+            overflow-x: auto;
+            padding: 5px;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
         /*
         *      Day/Night Toggle
         */
