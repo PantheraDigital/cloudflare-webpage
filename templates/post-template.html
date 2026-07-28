@@ -2,10 +2,14 @@
     <details class="post" name="posts">
         <summary>
             <h3 style="display:inline-block; margin: 0;">${title}</h3>
-            ${intro}
+            <div class="post-intro">
+                ${intro}
+            </div>
         </summary>
-        ${body}
-        <p name="tags">tags: ${tags}</p>
-        <input type="button" value="minimize" onclick="this.parentElement.removeAttribute('open')"/>
+        <div class="post-body">
+            ${body}
+            <p name="tags">tags: ${tags}</p>
+            <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')"/>
+        </div>
     </details>
 </article>
