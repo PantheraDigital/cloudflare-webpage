@@ -1,22 +1,85 @@
+import { WorkerEntrypoint } from "cloudflare:workers";
 import projectTemplate from "../templates/project-template.html";
 import postTemplate from "../templates/post-template.html";
 
+class KVContentHandler {
+    constructor(env, keys, type, template, prefix) {
+        this.env = env;
+        this.keys = keys;
+        this.type = type;
+        this.template = template;
+        this.prefix = prefix;
+    }
+
+    async element(el) {
+        try {
+            // KV get() - max keys 100, response size limit 25MB
+            const batches = createBatches(this.keys);
+            let entryCount = 0;
+
+            for (const batch of batches) {
+                const batchKeyNames = batch.map(k => k.name);
+                const entries = await this.env.HTML_KV.get(batchKeyNames);
+                
+                for (const key of batch) {
+                    const fullBody = entries.get(key.name) || "";
+                    let htmlChunk = "";
+
+                    if (this.type === "post") {
+                        // posts
+                        //  entryIndex, title, short, body, tags
+                        const splitIndex = fullBody.indexOf("<!-- -->");
+                        const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
+                        const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 8) : fullBody;
+
+                        htmlChunk = renderHTMLTemplate(this.template, {
+                            entryIndex: entryCount,
+                            title: key.name.slice(this.prefix.length),
+                            short: preBody,
+                            body: mainBody,
+                            tags: key.metadata.tags || [],
+                        });
+                    } else if (this.type === "project") {
+                        // projects
+                        //  entryIndex, title, body, tags
+                        htmlChunk = renderHTMLTemplate(this.template, {
+                            entryIndex: entryCount,
+                            title: key.name.slice(this.prefix.length),
+                            body: fullBody,
+                            tags: key.metadata.tags || [],
+                        });
+                    }
+                    
+                    entryCount++;
+                    el.append(htmlChunk + "\n", { html: true });
+                }
+            }
+
+        } catch(error) {
+            console.error("KVContentHandler error: ", error);
+            el.append("<!-- Error loading content -->", { html: true });
+        }
+    }
+}
+
 // ai
 function renderHTMLTemplate(template, data) {
-  const keys = Object.keys(data);
-  const values = Object.values(data);
-
   // Helper to safely resolve a single variable or literal value
   function resolveValue(token) {
     token = token.trim();
-    // Handle string literals (e.g., 'hello' or "hello")
-    if ((token.startsWith("'") && token.endsWith("'")) || (token.startsWith('"') && token.endsWith('"'))) {
+    if (!token) return '';
+    
+    // Handle string literals
+    const firstChar = token[0];
+    if ((firstChar === "'" || firstChar === '"') && token.endsWith(firstChar)) {
       return token.slice(1, -1);
     }
+    
     // Handle booleans/null
     if (token === 'true') return true;
     if (token === 'false') return false;
     if (token === 'null' || token === 'undefined') return '';
+    
     // Handle numeric literals
     if (!isNaN(Number(token))) return Number(token);
     
@@ -24,7 +87,7 @@ function renderHTMLTemplate(template, data) {
     return data.hasOwnProperty(token) ? data[token] : '';
   }
 
-  // Safe expression evaluator (Handles simple variables & single-level ternaries)
+  // Safe expression evaluator
   function safeEval(expr) {
     expr = expr.trim();
 
@@ -36,7 +99,6 @@ function renderHTMLTemplate(template, data) {
       const trueExpr = ternaryMatch[2].trim();
       const falseExpr = ternaryMatch[3].trim();
 
-      // Evaluate truthiness of condition
       const conditionValue = resolveValue(conditionExpr);
       const isTruthy = Array.isArray(conditionValue) ? conditionValue.length > 0 : Boolean(conditionValue);
 
@@ -45,14 +107,13 @@ function renderHTMLTemplate(template, data) {
       // Check if chosen branch contains nested template literals (`...`)
       if (chosenExpr.startsWith('`') && chosenExpr.endsWith('`')) {
         const innerContent = chosenExpr.slice(1, -1);
-        // Recursively evaluate any ${var} found inside the string
         return renderHTMLTemplate(innerContent, data);
       }
 
       return resolveValue(chosenExpr);
     }
 
-    // Standard variable lookup (e.g., "entryGroup" or "tags.join(', ')")
+    // Standard variable lookup (e.g., "tags.join(', ')")
     if (expr.includes('.join(')) {
       const [arrName, glue] = expr.split('.join(');
       const cleanGlue = glue.replace(/['"`)]/g, '');
@@ -63,144 +124,134 @@ function renderHTMLTemplate(template, data) {
     return resolveValue(expr);
   }
 
-  // Bracket depth tracking parser (no eval, no risky regex boundary issues)
   let result = '';
-  let i = 0;
+  let lastIndex = 0;
+  
+  // Jump chunk-by-chunk instead of character-by-character
+  let startIdx = template.indexOf('${', lastIndex);
 
-  while (i < template.length) {
-    if (template[i] === '$' && template[i + 1] === '{') {
-      const startIdx = i + 2;
-      let braceDepth = 1;
-      let inString = null;
-      let j = startIdx;
+  while (startIdx !== -1) {
+    // Append the static HTML chunk before the placeholder
+    result += template.slice(lastIndex, startIdx);
 
-      while (j < template.length && braceDepth > 0) {
-        const char = template[j];
-        const prevChar = template[j - 1];
+    let braceDepth = 1;
+    let inString = null;
+    let j = startIdx + 2;
 
-        if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
-          if (inString === null) inString = char;
-          else if (inString === char) inString = null;
-        }
+    // Fast-forward to find the matching closing brace
+    while (j < template.length && braceDepth > 0) {
+      const char = template[j];
+      const prevChar = template[j - 1];
 
-        if (!inString) {
-          if (char === '{') braceDepth++;
-          if (char === '}') braceDepth--;
-        }
-        j++;
+      if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
+        if (inString === null) inString = char;
+        else if (inString === char) inString = null;
+      } else if (!inString) {
+        if (char === '{') braceDepth++;
+        else if (char === '}') braceDepth--;
       }
-
-      const expression = template.substring(startIdx, j - 1);
-      result += safeEval(expression);
-      i = j;
-    } else {
-      result += template[i];
-      i++;
+      j++;
     }
+
+    if (braceDepth === 0) {
+      const expression = template.slice(startIdx + 2, j - 1);
+      result += safeEval(expression);
+      lastIndex = j;
+    } else {
+      // Failsafe: if brackets are malformed, output the literal '${' and move on
+      result += '${';
+      lastIndex = startIdx + 2;
+    }
+
+    startIdx = template.indexOf('${', lastIndex);
   }
 
-  return result.split('\n').filter(line => line.trim() !== '').join('\n');
+  // Append any remaining static HTML after the last placeholder
+  result += template.slice(lastIndex);
+
+  // Strip empty lines using Regex instead of Array split/filter/join
+  return result.replace(/^\s*$(?:\r\n?|\n)/gm, '');
 }
 
-async function renderHTML(request, env, overrideData = null, dataType = "") {
-    // json == override or KV or get from github
-    // html == override or ASSET or get from github
-    let json = (overrideData && dataType === "json") ? overrideData : await env.WEBPAGE_KV.get("json");
-    let html = (overrideData && dataType === "html") ? overrideData : null;
+
+// strings in V8 are UTF-16, not UTF-8
+
+// return final form of page html as string
+async function renderPage(env) {
+    // list return [{keys:[{ name:"", expiration:num, metadata:{} }], list_complete:bool, cursor:""}]
+    const [htmlRes, postKVList, projectKVList] = await Promise.all([
+        env.ASSETS.fetch(new Request(new URL("/index.html", "http://dummy"))),
+        env.HTML_KV.list({prefix: env.POST_PREFIX, limit: 1000}),
+        env.HTML_KV.list({prefix: env.PROJECT_PREFIX, limit: 1000})
+    ]);
+    if (!htmlRes.ok) {
+        throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
+    }
+
+    const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === "true");
+    const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
+
+    const rewriter = new HTMLRewriter()
+        .on('#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
+        .on('#projects-container', new KVContentHandler(env, projectKeys, "project", projectTemplate, env.PROJECT_PREFIX));
+
+    return rewriter.transform(htmlRes);
+}
+
+function createBatches(kvKeyList) {
+    // KV get() - max keys 100, response size limit 25MB
+    // 1B * 1024 * 1024 = 1MiB
+    // 1B * 1000 * 1000 = 1MB
+    const resultBatch = [];
+    const maxBatchSize = (25 * 1000 * 1000) - 1000; // 25MB - 1kb
+
+    let currentBatch = []; // [[{ name:"", expiration:num, metadata:{} }, ...], ...]
+    let currentBatchSize = 0; // key.metadata.size = char count. 1 char = 1 byte
     
-    if (!html) {
-        const assetsResponse = await env.ASSETS.fetch(new Request(new URL("/index.html", request.url)));
-        if (assetsResponse.ok) {
-            html = await assetsResponse.text();
-        } else {
-            html = await env.GET_GITHUB_JSON.fetchGitHubRawData("html");
-            console.log("Get HTML fallback data");
+    for (const key of kvKeyList) {
+        const size = parseInt(key.metadata.size || 0);
+        if (size > maxBatchSize) {
+            continue;
         }
-    }
-    if (!json) { 
-        json = await env.GET_GITHUB_JSON.fetchGitHubRawData("json");
-        console.log("Get JSON fallback data");
-    }
-    
-    if (!json || !html) {
-        throw new Error("Critical source recovery components missing.");
-    }
 
-    const parsedJSON = JSON.parse(json);
-    const descJSON = {};
-    let count = 0;
+        if (currentBatchSize + size > maxBatchSize
+            || currentBatch.length === 100) {
+            resultBatch.push(currentBatch);
+            currentBatch = [];
+            currentBatchSize = 0;
+        }
 
-    for (const entry of parsedJSON.Projects) {
-        descJSON[count++] = entry.description || '';
+        currentBatchSize += size;
+        currentBatch.push(key);
     }
-    for (const entry of parsedJSON.Posts) {
-        descJSON[count++] = entry.intro || '';
-        descJSON[count++] = entry.body || '';
+    if (currentBatch.length > 0) {
+        resultBatch.push(currentBatch);
     }
-
-    const mdResponse = await env.MARKDOWN_TO_HTML.fetch("https://internal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(descJSON),
-    });
-    const htmlDescJson = await mdResponse.json();
-    
-    count = 0;
-    const projectHTML = parsedJSON.Projects.map((entry, idx) => {
-        const htmlDesc = htmlDescJson[count++];
-        return renderHTMLTemplate(projectTemplate, {
-            entryIndex: idx, title: entry.title, link: entry.link, imgSrc: entry.imgSrc, imgDes: entry.imgDes, tags: entry.tags, description: htmlDesc
-        });
-    }).join('\n');
-
-    const postHTML = parsedJSON.Posts.map((entry, idx) => {
-        const htmlIntro = htmlDescJson[count++];
-        const htmlbody = htmlDescJson[count++];
-        return renderHTMLTemplate(postTemplate, {
-            entryIndex: idx, title: entry.title, intro: htmlIntro, body: htmlbody, tags: entry.tags
-        });
-    }).join('\n');
-
-    return html.replace("<!--placeholder-projects-data-->", projectHTML)
-                .replace("<!--placeholder-posts-data-->", postHTML);
+    return resultBatch;
 }
+
 
 // GET - public get asset
 // POST - internal use only, render html and store
-export default {
-    async fetch(request, env, ctx) {
+export default class extends WorkerEntrypoint {
+    async fetch(request) {
         const url = new URL(request.url);
 
         if (request.method === "POST") {
-            if (url.hostname !== "internal" || url.pathname !== "/render") {
+            if (url.pathname !== "/force-render") {
                 return new Response("Not Found", { status: 404 });
             }
             const clientApiKey = request.headers.get("X-API-Key");
-            if (!env.INTERNAL_API_KEY || clientApiKey !== env.INTERNAL_API_KEY) {
+            if (!this.env.INTERNAL_API_KEY || clientApiKey !== this.env.INTERNAL_API_KEY) {
                 return new Response("Unauthorized: Invalid or Missing API Key", { status: 401 });
             }
 
             try {
-                let contentType = request.headers.get('content-type');
-                let overrideData = null;
-
-                if (contentType) {
-                    if (contentType.includes('application/json')) {
-                        contentType = "json";
-                        overrideData = await request.text();
-                    } else if (contentType.includes('text/html')) {
-                        contentType = "html";
-                        overrideData = await request.text();
-                    }
-                }
-
-                const newHTML = await renderHTML(request, env, overrideData, contentType);
-                ctx.waitUntil(env.WEBPAGE_KV.put("html_render", newHTML));
-                return new Response("Render Success");
-                
+                await this.render();
+                return new Response("Render success", { status: 200 });
             } catch (error) {
                 console.error("Render failure:", error.message);
-                return new Response(`Render failure: ${error.message}`);
+                return new Response(`Render failure: ${error.message}`, { status: 500 });
             }
             
         } else if (request.method === "GET") {
@@ -208,23 +259,38 @@ export default {
                 try {
                     throw new Error("No Tests.");
                 } catch (error) {
-                    return new Response(`Test failure: ${error.message}`);
+                    return new Response(`Test failure: ${error.message}`, { status: 500 });
                 }
             }
 
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
-                return env.ASSETS.fetch(request);
+                return this.env.ASSETS.fetch(request);
             }
 
             try {
-                const renderedHTML = await env.WEBPAGE_KV.get("html_render");
+                const renderedHTML = await this.env.WEBPAGE_KV.get("html_render");
                 if (renderedHTML) {
                     return new Response(renderedHTML, {headers: { "Content-Type": "text/html;charset=UTF-8" }});
                 }
             } catch (error) {
                 console.error("HTML gathering failure", error.message);
+                return new Response("Internal Server Error", { status: 500 });
             }
         }
         return new Response("Not Found", { status: 404 });
+    }
+
+    async render() {
+        try {
+            const newHTML = await renderPage(this.env);
+            this.ctx.waitUntil(
+                this.env.WEBPAGE_KV.put("html_render", newHTML)
+                .catch(err => console.error("Failed to save render to KV:", err))
+            );
+            console.log("Render success");
+        } catch (error) {
+            console.error("Render failure:", error.message);
+            throw new Error(`Render failure: ${error.message}`);
+        }
     }
 };

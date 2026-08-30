@@ -1,9 +1,10 @@
 <details class="entry project-details" name="projects" data-tags="${tags}" data-original-index="${entryIndex}">
-    <summary><h3 style="display: inline-block;">${title}</h3></summary>
+    <summary>
+        <h3 style="display: inline-block;">${title}</h3>
+        <p name="tags">tags: ${tags}</p>
+    </summary>
     <div class="project-body">
-        ${imgSrc ? `<img style="height: 180px; background-color: #00000042;" src="${imgSrc}" alt="${imgDes}" loading="lazy"><br>` : ''}
-        ${link ? `<a href="${link}" aria-label="Project Link">${link}</a>` : ''}
-        ${description ? description : ''}
+        ${body}
         <p name="tags">tags: ${tags}</p>
         <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')"/>
     </div>
