@@ -11,10 +11,6 @@
       "INTERNAL_API_KEY"
     ]
   },
-  "vars": {
-    "POST_PREFIX": "",
-    "PROJECT_PREFIX": ""
-  },
   "assets": {
     "directory": "./public",
     "binding": "ASSETS",
