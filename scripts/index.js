@@ -1,3 +1,9 @@
+/* env vars
+    HTML_KV - full page and entry snippets
+    POST_PREFIX - post entry key prefix
+    PROJECT_PREFIX - project entry key prefix
+    INTERNAL_API_KEY - key to locked services
+*/
 import { WorkerEntrypoint } from "cloudflare:workers";
 import projectTemplate from "../templates/project-template.html";
 import postTemplate from "../templates/post-template.html";
@@ -268,7 +274,7 @@ export default class extends WorkerEntrypoint {
             }
 
             try {
-                const renderedHTML = await this.env.WEBPAGE_KV.get("html_render");
+                const renderedHTML = await this.env.HTML_KV.get("html_render");
                 if (renderedHTML) {
                     return new Response(renderedHTML, {headers: { "Content-Type": "text/html;charset=UTF-8" }});
                 }
@@ -284,13 +290,13 @@ export default class extends WorkerEntrypoint {
         try {
             const newHTML = await renderPage(this.env);
             this.ctx.waitUntil(
-                this.env.WEBPAGE_KV.put("html_render", newHTML)
+                this.env.HTML_KV.put("html_render", newHTML.body)
                 .catch(err => console.error("Failed to save render to KV:", err))
             );
             console.log("Render success");
         } catch (error) {
             console.error("Render failure:", error.message);
-            throw new Error(`Render failure: ${error.message}`);
+            throw new Error(`Render failure: ${error.message}`, { cause: error });
         }
     }
 };
