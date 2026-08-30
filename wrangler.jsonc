@@ -12,8 +12,8 @@
     ]
   },
   "vars": {
-    "POST_PREFIX":"",
-    "PROJECT_PREFIX":""
+    "POST_PREFIX": "",
+    "PROJECT_PREFIX": ""
   },
   "assets": {
     "directory": "./public",
