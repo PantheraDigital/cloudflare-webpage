@@ -1,10 +1,19 @@
 {
   "name": "cloudflare-webpage",
   "main": "./scripts/index.js",
-  "compatibility_date": "2026-06-30",
+  "compatibility_date": "2026-08-29",
   "keep_vars": true,
   "observability": {
     "enabled": true
+  },
+  "secrets": {
+    "required": [
+      "INTERNAL_API_KEY"
+    ]
+  },
+  "vars": {
+    "POST_PREFIX":"",
+    "PROJECT_PREFIX":""
   },
   "assets": {
     "directory": "./public",
@@ -13,18 +22,8 @@
   },
   "kv_namespaces": [
     {
-      "binding": "WEBPAGE_KV",
-      "id": "9fd7e9f61bc94405892ecbb6903f89b8"
-    }
-  ],
-  "services": [
-    {
-      "binding": "GET_GITHUB_JSON",
-      "service": "gather-github-json"
-    },
-    {
-      "binding": "MARKDOWN_TO_HTML",
-      "service": "markdown-to-html"
+      "binding": "HTML_KV",
+      "id": "dde65671e6474e378814113b20f79eeb"
     }
   ]
 }
