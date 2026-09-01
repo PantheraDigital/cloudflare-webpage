@@ -54,7 +54,7 @@ class KVContentHandler {
                     if (this.type === "post") {
                         // posts
                         //  entryIndex, title, short, body, tags
-                        const splitIndex = fullBody.indexOf('<br class="page-br">');
+                        const splitIndex = fullBody.indexOf('<hr class="page-br">');
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
                         const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 8) : fullBody;
 
