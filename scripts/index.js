@@ -34,7 +34,7 @@ class KVContentHandler {
 
     async element(el) {
         try {
-            console.log(el, this.keys, this.type, this.prefix);
+            console.log(`Rendering ${this.type} | Keys:`, JSON.stringify(this.keys.map(k => k.name)));
             // KV get() - max keys 100, response size limit 25MB
             const batches = createBatches(this.keys);
             let entryCount = 0;
@@ -214,14 +214,14 @@ async function renderPage(env) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
     }
 
-    console.log(JSON.stringify(postKVList));
-    console.log(JSON.stringify(projectKVList));
+    console.log("postKVList: ", JSON.stringify(postKVList));
+    console.log("projectKVList: ", JSON.stringify(projectKVList));
 
     const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === "true");
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
 
-    console.log(JSON.stringify(postKeys));
-    console.log(JSON.stringify(projectKeys));
+    console.log("postKeys: ", JSON.stringify(postKeys));
+    console.log("projectKeys: ", JSON.stringify(projectKeys));
 
     const rewriter = new HTMLRewriter()
         .on('div#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
