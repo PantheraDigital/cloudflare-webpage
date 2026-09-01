@@ -34,6 +34,7 @@ class KVContentHandler {
 
     async element(el) {
         try {
+            console.log(el, this.keys, this.type, this.prefix);
             // KV get() - max keys 100, response size limit 25MB
             const batches = createBatches(this.keys);
             let entryCount = 0;
@@ -215,6 +216,9 @@ async function renderPage(env) {
 
     const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === "true");
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
+
+    console.log("post keys", postKeys);
+    console.log("project keys", projectKeys);
 
     const rewriter = new HTMLRewriter()
         .on('div#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
