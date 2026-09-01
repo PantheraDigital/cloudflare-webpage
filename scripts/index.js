@@ -217,8 +217,8 @@ async function renderPage(env) {
     console.log("postKVList: ", JSON.stringify(postKVList));
     console.log("projectKVList: ", JSON.stringify(projectKVList));
 
-    const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === "true");
-    const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
+    const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === true);
+    const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === true);
 
     console.log("postKeys: ", JSON.stringify(postKeys));
     console.log("projectKeys: ", JSON.stringify(projectKeys));
