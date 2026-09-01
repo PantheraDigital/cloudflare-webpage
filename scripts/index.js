@@ -17,6 +17,21 @@ class KVContentHandler {
         this.prefix = prefix;
     }
 
+    extractH1Title(htmlString, fallbackTitle) {
+        const lowerHtml = htmlString.toLowerCase();
+        const startTagIdx = lowerHtml.indexOf("<h1");
+        if (startTagIdx === -1) return fallbackTitle;
+
+        const openTagEndIdx = htmlString.indexOf(">", startTagIdx);
+        if (openTagEndIdx === -1) return fallbackTitle;
+
+        const closeTagIdx = lowerHtml.indexOf("</h1>", openTagEndIdx);
+        if (closeTagIdx === -1) return fallbackTitle;
+
+        const rawTitle = htmlString.slice(openTagEndIdx + 1, closeTagIdx);
+        return rawTitle.trim() || fallbackTitle;
+    }
+
     async element(el) {
         try {
             // KV get() - max keys 100, response size limit 25MB
@@ -29,18 +44,22 @@ class KVContentHandler {
                 
                 for (const key of batch) {
                     const fullBody = entries.get(key.name) || "";
+                    
+                    const defaultTitle = key.name.slice(this.prefix.length);
+                    const title = this.extractH1Title(fullBody, defaultTitle);
+                    
                     let htmlChunk = "";
 
                     if (this.type === "post") {
                         // posts
                         //  entryIndex, title, short, body, tags
-                        const splitIndex = fullBody.indexOf("<!-- -->");
+                        const splitIndex = fullBody.indexOf('<br class="page-br">');
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
                         const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 8) : fullBody;
 
                         htmlChunk = renderHTMLTemplate(this.template, {
                             entryIndex: entryCount,
-                            title: key.name.slice(this.prefix.length),
+                            title: title,
                             short: preBody,
                             body: mainBody,
                             tags: key.metadata.tags || [],
@@ -50,7 +69,7 @@ class KVContentHandler {
                         //  entryIndex, title, body, tags
                         htmlChunk = renderHTMLTemplate(this.template, {
                             entryIndex: entryCount,
-                            title: key.name.slice(this.prefix.length),
+                            title: title,
                             body: fullBody,
                             tags: key.metadata.tags || [],
                         });
