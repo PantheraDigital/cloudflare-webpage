@@ -313,85 +313,80 @@
         */
         .project-details{
         margin: 16px 0;
-        white-space: normal; 
-        word-wrap: break-word;
-        overflow-wrap: break-word;
         }
-        .project-details[open] .project-body{
-        border-left: solid black 1px;
-        padding-left: 10px;
-        }
-
-        .project-details summary{
-        margin-bottom: 5px;
-        }
-        .project-details summary h3{
-        margin: 0;
-        font-size: medium; 
-        }
-        .project-details img{
-        width: 250px;
-        }
-        .project-details p:first-child{
-        margin-top: 0;
-        }
-
-        .project-details details[open]{
-        margin: 0 0 10px 0;
-        }
-        .project-details details[open] summary{
-        margin: 0 0 10px 0;
-        }
-        
-
-        .post{
+        .post-details{
         margin: 24px 0;
+        }
+        .project-details,
+        .post-details{
         white-space: normal; 
         word-wrap: break-word;
         overflow-wrap: break-word;
         }
 
+        .project-title,
+        .post-title{
+        display: inline-block;
+        margin: 0 0 5px 0;
+        font-size: large; 
+        }
+
+        .project-intro,
+        .project-body,
         .post-intro,
         .post-body{
         border-left: solid black 1px;
-        padding-left: 10px;
+        padding-left: 13.768px; /* marker width */
         }
-
-        .post-intro > *:last-child{
-        margin-bottom: 0;
-        }
-        .post[open] .post-intro > *:last-child{
-        padding-bottom: 13px;
-        }
-        .post-body > *:first-child{
+        
+        .project-intro p[name="tags"],
+        .post-intro p:first-child{
         margin-top: 0;
         }
         
-        .post img{
+        .post-intro p[name="tags"]{
+        margin-top: 10px;
+        }
+
+        .project-details[open] .project-intro,
+        .post-details[open] .post-intro p[name="tags"]{
+        display: none;
+        }
+        
+        .post-details img,
+        .project-details img{
         width: 250px;
         }
 
+        #projects-container .project-details:first-child,
+        #posts-container .post-details:first-child{
+        margin-top: 0;
+        }
+
         @media (hover: hover){
-            .post summary:hover h3,
-            .project-details summary:hover h3{
-            background-color: cyan;
-            }
-            .post[open] summary h3,
-            .project-details[open] summary h3{
+            .project-details summary:hover .project-title,
+            .post-details summary:hover .post-title{
             text-decoration: underline cyan 2px;
+            }
+            .project-details[open] .project-title,
+            .post-details[open] .post-title{
+            text-decoration: underline magenta 2px;
             }
         }
         @media (hover: none){
-            .post summary h3,
-            .project-details summary h3{
+            .project-details summary .project-title,
+            .post-details summary .post-title{
             text-decoration: underline cyan 2px;
             }
-            .post[open] summary h3,
-            .project-details[open] summary h3{
+            .project-details[open] .project-title,
+            .post-details[open] .post-title{
             text-decoration: underline magenta 2px;
             }
         }
 
+        .text-list li{
+            margin: 4px 0;
+        }
 
         @media only screen and (max-width: 500px) {
         .text-list{
@@ -807,7 +802,7 @@
                         </div>
                         <div style="width: 100%; height: fit-content; box-sizing: border-box; padding: 5px; margin-top: auto;">
                             <h3 class="page-title subtitle underline-title" style="margin-top: 0;">contact</h3>
-                            <span><span class="icon envelope"></span> pantheradigitalonline@gmail.com</span>
+                            <span><span class="icon envelope"></span> <span style="user-select: all;">pantheradigitalonline@gmail.com</span></span>
                             <h3 class="page-title subtitle underline-title">links</h3>
                             <ul class="text-list">
                                 <li><a href="https://github.com/PantheraDigital" target="_blank"><span class="icon github"></span> GitHub</a></li>
@@ -845,6 +840,7 @@
         </div>    
     </main>
 
+
     <svg id="filters" class="hide">
         <filter id='noiseFilter'>
             <feturbulence id="turbulence" 
@@ -856,6 +852,7 @@
             <fedisplacementmap in="SourceGraphic" scale="120" />
         </filter>
     </svg>
+
 
     <script src="scripts/frontend.js"></script>
 </body>
