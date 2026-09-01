@@ -308,10 +308,9 @@ export default class extends WorkerEntrypoint {
     async render() {
         try {
             const newHTML = await renderPage(this.env);
-            this.ctx.waitUntil(
-                this.env.HTML_KV.put("html_render", newHTML.body)
-                .catch(err => console.error("Failed to save render to KV:", err))
-            );
+            await this.env.HTML_KV.put("html_render", newHTML.body)
+                .catch(err => console.error("Failed to save render to KV:", err));
+            
             console.log("Render success");
         } catch (error) {
             console.error("Render failure:", error.message);
