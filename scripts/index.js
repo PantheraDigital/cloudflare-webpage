@@ -214,14 +214,14 @@ async function renderPage(env) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
     }
 
-    console.log(postKVList);
-    console.log(projectKVList);
+    console.log(JSON.stringify(postKVList));
+    console.log(JSON.stringify(projectKVList));
 
     const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === "true");
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
 
-    console.log(postKeys);
-    console.log(projectKeys);
+    console.log(JSON.stringify(postKeys));
+    console.log(JSON.stringify(projectKeys));
 
     const rewriter = new HTMLRewriter()
         .on('div#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
