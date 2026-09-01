@@ -217,8 +217,8 @@ async function renderPage(env) {
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
 
     const rewriter = new HTMLRewriter()
-        .on('#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
-        .on('#projects-container', new KVContentHandler(env, projectKeys, "project", projectTemplate, env.PROJECT_PREFIX));
+        .on('div#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
+        .on('div#projects-container', new KVContentHandler(env, projectKeys, "project", projectTemplate, env.PROJECT_PREFIX));
 
     return rewriter.transform(htmlRes);
 }
