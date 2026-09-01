@@ -214,6 +214,9 @@ async function renderPage(env) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
     }
 
+    console.log("post kv", postKVList);
+    console.log("project kv", projectKVList);
+
     const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === "true");
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === "true");
 
