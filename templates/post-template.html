@@ -1,15 +1,15 @@
-<article class="entry" data-tags="${tags}" data-original-index="${entryIndex}">
+<article class="entry" data-tags="${rawTags}" data-original-index="${entryIndex}">
     <details class="post-details" name="posts">
         <summary>
             <h3 class="post-title">${title}</h3>
             <div class="post-intro">
                 ${short}
-                <p name="tags">tags: ${tags}</p>
+                <p name="tags">tags: ${displayTags}</p>
             </div>
         </summary>
         <div class="post-body">
             ${body}
-            <p name="tags">tags: ${tags}</p>
+            <p name="tags">tags: ${displayTags}</p>
             <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')"/>
         </div>
     </details>
