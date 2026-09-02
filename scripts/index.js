@@ -44,11 +44,13 @@ class KVContentHandler {
                 const entries = await this.env.HTML_KV.get(batchKeyNames);
                 
                 for (const key of batch) {
-                    const fullBody = entries.get(key.name) || "";
+                    const rawBody = entries.get(key.name) || "";
                     
                     const defaultTitle = key.name.slice(this.prefix.length);
-                    const title = this.extractH1Title(fullBody, defaultTitle);
-                    
+                    const title = this.extractH1Title(rawBody, defaultTitle);
+                    const fullBody = title === defaultTitle ? rawBody :
+                        rawBody.slice(rawBody.indexOf("</h1>") + 6);
+
                     let htmlChunk = "";
 
                     if (this.type === "post") {
@@ -56,7 +58,7 @@ class KVContentHandler {
                         //  entryIndex, title, short, body, tags
                         const splitIndex = fullBody.indexOf('<hr class="page-br">');
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
-                        const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 8) : fullBody;
+                        const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 20) : fullBody;
 
                         htmlChunk = renderHTMLTemplate(this.template, {
                             entryIndex: entryCount,
