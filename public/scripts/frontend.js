@@ -186,7 +186,8 @@ function initPage() {
         // remove temp img bg
         const img = entry.querySelector("img");
         if (img) {
-            img.addEventListener("load", (event) => { img.removeAttribute("style"); });
+            img.classList.add("loading");
+            img.addEventListener("load", (event) => img.classList.remove("loading") );
         }
     }
 
@@ -199,7 +200,8 @@ function initPage() {
         // remove temp img bg
         const img = entry.querySelector("img");
         if (img) {
-            img.addEventListener("load", (event) => { img.removeAttribute("style"); });
+            img.classList.add("loading");
+            img.addEventListener("load", (event) => img.classList.remove("loading") );
         }
     }
 
