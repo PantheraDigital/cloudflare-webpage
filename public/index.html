@@ -312,7 +312,7 @@
         *      Projects / Posts
         */
         .project-details{
-        margin: 16px 0;
+        margin: 0 0 16px 0;
         }
         .post-details{
         margin: 24px 0;
@@ -340,10 +340,19 @@
         }
         
         .project-intro p[name="tags"],
-        .project-body p:first-child,
+        .project-body *:first-child,
         .post-intro p:first-child,
         .post-body *:first-child{
         margin-top: 0;
+        }
+
+        .project-intro p[name="tags"] span,
+        .post-intro p[name="tags"] span{
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .project-intro p[name="tags"]{
+        margin-bottom: 0;
         }
         
         .post-intro p[name="tags"]{
@@ -356,6 +365,7 @@
         }
         .post-details[open] .post-intro p[name="tags"]{
         visibility: hidden;
+        height: 0;
         }
         
         .post-details img,
@@ -773,7 +783,7 @@
         <nav style="z-index: 1; position: sticky; top: 0; text-align: center; padding-top: 4vh;">
             <a href="#about" class="nav-button" onclick="navigateToSlide(this, 0)">About</a>
             <a href="#projects" class="nav-button" onclick="navigateToSlide(this, 1)">Projects</a>
-            <a href="#posts" class="nav-button" onclick="navigateToSlide(this, 2)">Posts</a>
+            <a href="#posts" class="nav-button" onclick="navigateToSlide(this, 2)">Articles</a>
         </nav>
     </div>
 
@@ -826,6 +836,91 @@
                         <h2 class="page-title underline-title">Projects</h2>
                         <div id="projects-container" style="margin-left: 5px; margin-right: 5px; flex-grow: 1;">
                             <!--placeholder-projects-data-->
+<details class="entry project-details" name="projects" data-tags="Godot,Game,Tool" data-original-index="0">
+    <summary>
+        <h3 class="project-title">Character Step</h3>
+        <div class="project-intro">
+            <p name="tags">tags: Godot,Game,Tool</p>
+        </div>
+    </summary>
+    <div class="project-body">
+        <p><img src="https://raw.githubusercontent.com/PantheraDigital/InfoDump/refs/heads/main/project-imgs/PantheraDigital_GodotCharacterStep.webp" alt="Screenshot of the github page for the Character Step project."></p>
+<p><a href="https://github.com/PantheraDigital/GodotCharacterStep" rel="noopener noreferrer" target="_blank">https://github.com/PantheraDigital/GodotCharacterStep</a></p>
+<p>Code for moving objects across jagged surfaces. Performs collision detection and position manipulation to allow objects to "step" up and down from obstacles.</p>
+        <p name="tags">tags: Godot,Game,Tool</p>
+        <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')">
+    </div>
+</details>
+<details class="entry project-details" name="projects" data-tags="Website" data-original-index="6">
+    <summary>
+        <h3 class="project-title">My Forever Changing Website <span class="icon star"></span></h3>
+        <div class="project-intro">
+            <p name="tags">tags: Website</p>
+        </div>
+    </summary>
+    <div class="project-body">
+        <p><img src="https://raw.githubusercontent.com/PantheraDigital/InfoDump/refs/heads/main/project-imgs/PantheraDigital_PageScreenshot.webp" alt="Screenshot of old version of this webpage."></p>
+<p>link: <a href="https://github.com/PantheraDigital/cloudflare-webpage" rel="noopener noreferrer" target="_blank">https://github.com/PantheraDigital/cloudflare-webpage</a></p>
+<p>The goal for this website has always been the same, a central place to display my projects, talk about them, and share other bits of knowledge with "posts".</p>
+<p>Through its iterations I have explored different art styles and ways to accomplish the functionality I have desired. The previous iteration was hosted on GitHub Pages, allowing for only frontend JavaScript. This version first used Google API to pull text from Google Docs formatted with HTML and some custom HTML tags, parsed the text, then created and added elements to the HTML. After this it used GitHub API to pull the text data from a file in a repo formatted with markdown.</p>
+<p>In this latest iteration I have migrated to Cloudflare, allowing me to implement a true backend, bringing this site from pure frontend to full stack.</p>
+<h2>Tech</h2>
+<ul>
+<li>Frontend
+<ul>
+<li>HTML, JS, CSS</li>
+</ul>
+</li>
+<li>Backend
+<ul>
+<li>Host ------- <a href="https://developers.cloudflare.com/" rel="noopener noreferrer" target="_blank">Cloudflare</a></li>
+<li>Database --- <a href="https://github.com/" rel="noopener noreferrer" target="_blank">GitHub</a></li>
+<li>Database --- <a href="https://developers.cloudflare.com/kv/" rel="noopener noreferrer" target="_blank">Cloudflare KV</a></li>
+<li>Platform --- <a href="https://developers.cloudflare.com/workers/" rel="noopener noreferrer" target="_blank">Cloudflare Workers</a></li>
+<li>MD to HTML - <a href="https://marked.js.org/" rel="noopener noreferrer" target="_blank">Marked.js</a></li>
+</ul>
+</li>
+</ul>
+<h2>Website Features</h2>
+<details>
+ <summary>Server Side Rendering</summary>
+ Using Cloudflare Workers this website has all of its content added before it is delivered to the client. Data is pulled from the sources, parsed, added to the HTML, then cached for future delivery.
+</details>
+<details>
+ <summary>Remote Content Editing</summary>
+ All content in "Projects" and "Posts" is pulled from a GitHub repo holding markdown text, parsed, then added to the page. By updating the GitHub files I can update what is shown here, without having to edit the website directly.
+</details>
+<details>
+ <summary>Data Backup</summary>
+ All relevant data is held in multiple locations, GitHub and Cloudflare KV Store. The KV Store acts as the primary database while GitHub is the fallback or original source.
+</details>
+<details>
+ <summary>Render Caching</summary>
+ To reduce work done in the backend, the rendered HTML is cached, along with a parsed version of the markdown data. This allows the website to deliver the latest version without rebuilding the site for every client request.
+</details>
+<details>
+ <summary>HTML Template Files</summary>
+ Due to Cloudflare Workers running on the JavaScript V8 engine, the backend lacks the ability to edit HTML in the same way frontend scripts do, such as using DOM. So HTML edits are done as plain text and typical HTML templates won't work for reused elements, such as the elements in the "Projects" and "Posts" sections. 
+<p>To get around this I added a function that allows the backend to parse an HTML file as text, replace variable names that match with a JSON object's keys, and return a clean HTML structure as text that can be inserted into the main page's HTML.</p>
+<p>This is similar to Angular.js templates and is where the inspiration came from.</p>
+</details>
+<details>
+ <summary>Automated Render Update</summary>
+ When ever I update a file that would require a render update, a GitHub Webhook is triggered, alerting one of my Workers to re-render the website and cache the new result.
+</details>
+<details>
+ <summary>MD to HTML Content</summary>
+ By using Marked.js, I am able to convert the GitHub markdown text into usable HTML for injection into the website when rendering. 
+</details>
+<h2>Project Links</h2>
+<p><a href="https://github.com/PantheraDigital/cloudflare-webpage/blob/main/scripts/index.js" rel="noopener noreferrer" target="_blank">My Website Worker</a></p>
+<p><a href="https://github.com/PantheraDigital/cloudflare-webpage-workers" rel="noopener noreferrer" target="_blank">My Secondary Worker Scripts</a></p>
+<p><a href="https://github.com/PantheraDigital/cloudflare-webpage/tree/main/templates" rel="noopener noreferrer" target="_blank">The HTML Templates</a></p>
+<p><a href="https://github.com/PantheraDigital/InfoDump" rel="noopener noreferrer" target="_blank">The Content Repo</a></p>
+        <p name="tags">tags: Website</p>
+        <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')">
+    </div>
+</details>
                         </div>
                     </section>
                 </div>
@@ -834,9 +929,105 @@
             <div id="posts">
                 <div class="main-block">
                     <section class="main-content">
-                        <h2 class="page-title underline-title">Posts</h2>
+                        <h2 class="page-title underline-title">Articles</h2>
                         <div id="posts-container" style="margin-left: 5px; margin-right: 5px; flex-grow: 1;">
                             <!--placeholder-posts-data-->
+<article class="entry" data-tags="CodeArchitecture,Game" data-original-index="0">
+    <details class="post-details" name="posts">
+        <summary>
+            <h3 class="post-title">Attack Combos</h3>
+            <div class="post-intro">
+                <p>How to implement data structures that allow you to make attack chains and input buffers.</p>
+                <p name="tags">tags: CodeArchitecture,Game</p>
+            </div>
+        </summary>
+        <div class="post-body">
+<p><img src="https://raw.githubusercontent.com/PantheraDigital/InfoDump/refs/heads/main/post-imgs/ComboHeader.webp" alt="ComboHeader"></p>
+<p>link: <a href="https://github.com/PantheraDigital/AttackCombos" rel="noopener noreferrer" target="_blank">https://github.com/PantheraDigital/AttackCombos</a></p>
+            <p name="tags">tags: CodeArchitecture,Game</p>
+            <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')">
+        </div>
+    </details>
+</article>
+<article class="entry" data-tags="CodeChallenge" data-original-index="1">
+    <details class="post-details" name="posts">
+        <summary>
+            <h3 class="post-title">FizzBuzz Challenge</h3>
+            <div class="post-intro">
+                <p><strong><em>FizzBuzz</em></strong> is a programming/division challenge where your program outputs <em>“Fizz”</em> for integers divisible by 3, <em>“Buzz”</em> for integers divisible 5, and <em>“FizzBuzz”</em> for integers divisible by both 3 and 5.</p>
+<p>Here I will show my solution in C# as well as another solution to an alternate version of the challenge that involves using a <code>List</code> for the results.</p>
+                <p name="tags">tags: CodeChallenge</p>
+            </div>
+        </summary>
+        <div class="post-body">
+<h2>FizzBuzz</h2>
+<p>Given a set of integers print <em>“Fizz”</em> if an integer is divisible by 3, <em>“Buzz”</em> if the integer is divisible by 5, <em>“FizzBuzz”</em> if it is divisible by 3 and 5, and print only the integer if none of the conditions are true.</p>
+<h2>My Solution</h2>
+<pre><code>static void FizzBuzz()
+{
+    for (int i = 1; i &lt; 101; i++) // start with 1 to prevent dividing by 0
+    {
+        Console.WriteLine($"{i} - {((i % 3 == 0) ? "Fizz" : "")}{((i % 5 == 0) ? "Buzz" : "")}");
+    }
+};
+</code></pre>
+<p>Above is the solution I have come up with, apart from the loop it is a one line solution that creates a string based on the variable <code>i</code>. The modulus operator, <code>%</code>, is used to check for any remainder after dividing <code>i</code> by 3 and 5. Based on the result of each check the string <em>“Fizz”</em> and/or <em>“Buzz”</em> are added.</p>
+<p>Although it is a one line solution it is not the most readable at first glance, this can be improved by separating out the ternary check.</p>
+<pre><code>static void FizzBuzz()
+{
+    for (int i = 1; i &lt; 101; i++) // start with 1 to prevent dividing by 0
+    {
+        string fizz = (i % 3 == 0) ? "Fizz" : "";
+        string buzz = (i % 5 == 0) ? "Buzz" : "";
+        Console.WriteLine($"{i} - {fizz}{buzz}");
+    }
+};
+</code></pre>
+<p>The output of this solution will be a list of integers followed by <em>“Fizz”</em>, <em>“Buzz”</em>, <em>“FizzBuzz”</em>, or nothing depending on the index.</p>
+<pre><code>// Example output //
+1 -
+2 -
+3 - Fizz
+4 -
+5 - Buzz
+6 - Fizz
+…
+15 - FizzBuzz
+</code></pre>
+<h2>Alternate Solution</h2>
+<p>Another version of this challenge involves storing the answers within a <code>List</code> where <code>i</code> is the index of each <code>List</code> element and the answer is stored as a <code>string</code>.</p>
+<p>Here is a solution that utilizes a <code>List</code>:</p>
+<pre><code>static List&lt;string&gt; FizzBuzz(int n)
+{
+    List&lt;string&gt; result = new List&lt;string&gt;();
+    for(int i = 1; i &lt;= n; ++i)
+    {
+        if(i % 3 == 0 &amp;&amp; i % 5 == 0)
+        {
+            result.Add("FizzBuzz");
+        }
+        else if (i % 3 == 0)
+        {
+            result.Add("Fizz");
+        }
+        else if (i % 5 == 0)
+        {
+            result.Add("Buzz");
+        }
+        else
+        {
+            result.Add(i.ToString());
+        }
+    }
+    return result;
+};
+</code></pre>
+<p>Now when the function is called it will return a <code>List</code> of results that is the length of argument <code>n</code> and in which each element is either its index in <code>string</code> form, <em>“Fizz”</em>, <em>“Buzz”</em>, or <em>“FizzBuzz”</em>.</p>
+            <p name="tags">tags: CodeChallenge</p>
+            <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')">
+        </div>
+    </details>
+</article>
                         </div>
                     </section>
                 </div>
