@@ -51,7 +51,7 @@ class KVContentHandler {
                     const fullBody = title === defaultTitle ? rawBody :
                         rawBody.slice(rawBody.indexOf("</h1>") + 6);
 
-                    const tagHTML = key.metadata.tags?.map((tag) => `<span>${tag}</span>`) ?? [];
+                    const tagHTML = key.metadata.tags?.map((tag) => `<span>${tag}</span>`).join(" ") ?? [];
 
                     let htmlChunk = "";
 
@@ -67,7 +67,8 @@ class KVContentHandler {
                             title: title,
                             short: preBody,
                             body: mainBody,
-                            tags: tagHTML.join(" "),
+                            rawTags: key.metadata.tags || [],
+                            displayTags: tagHTML,
                         });
                     } else if (this.type === "project") {
                         // projects
@@ -76,7 +77,8 @@ class KVContentHandler {
                             entryIndex: entryCount,
                             title: title,
                             body: fullBody,
-                            tags: tagHTML.join(" "),
+                            rawTags: key.metadata.tags || [],
+                            displayTags: tagHTML,
                         });
                     }
                     
