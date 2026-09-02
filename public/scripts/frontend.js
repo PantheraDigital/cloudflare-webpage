@@ -157,7 +157,7 @@ function initPage() {
             prevClickedNav = element;
             element.classList.add("selected"); 
         }
-        element.setAttribute("href", "#main")
+        element.setAttribute("href", "#main");
     });
 
     // background behaviour
@@ -204,5 +204,24 @@ function initPage() {
     }
 
     addSortBars(allEntryTags);
+
+    // full screen imgs
+    const imgOverlay = document.getElementById("full-img-overlay");
+    const imgOverlayImg = document.getElementById("full-img-overlay-img");
+
+    document.querySelectorAll('.expand-img, [data-high-res-src]').forEach((element) => {
+        element.addEventListener("click", (event) => {
+            const srcData = element.getAttribute("data-high-res-src");
+            imgOverlayImg.src = srcData || element.src;
+            imgOverlayImg.alt = element.alt;
+            imgOverlay.classList.remove("hide");
+
+            if (!element.classList.contains("expand-img")) {
+                element.classList.add("expand-img");
+            }
+        });
+    });
+    imgOverlay.addEventListener("click", (event) => imgOverlay.classList.add("hide"));
+    imgOverlayImg.addEventListener("click", (event) => event.stopPropagation());
 }
 initPage();
