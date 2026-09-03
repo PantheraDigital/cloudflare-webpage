@@ -186,7 +186,7 @@ function initPage() {
         // remove temp img bg
         const img = entry.querySelector("img");
         if (img) {
-            img.addEventListener("load", (event) => img.classList.remove("loaded") );
+            img.addEventListener("load", (event) => img.classList.add("loaded") );
         }
     }
 
@@ -199,7 +199,7 @@ function initPage() {
         // remove temp img bg
         const img = entry.querySelector("img");
         if (img) {
-            img.addEventListener("load", (event) => img.classList.remove("loaded") );
+            img.addEventListener("load", (event) => img.classList.add("loaded") );
         }
     }
 
