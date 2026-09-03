@@ -183,10 +183,11 @@ function initPage() {
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
 
-        // remove temp img bg
-        const img = entry.querySelector("img");
-        if (img) {
+        const imgs = entry.querySelectorAll("img");
+        for (const img of imgs) {
             img.addEventListener("load", (event) => img.classList.add("loaded") );
+            img.classList.add("expand-img");
+            img.loading = 'lazy';
         }
     }
 
@@ -196,10 +197,11 @@ function initPage() {
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
     
-        // remove temp img bg
-        const img = entry.querySelector("img");
-        if (img) {
+        const imgs = entry.querySelectorAll("img");
+        for (const img of imgs) {
             img.addEventListener("load", (event) => img.classList.add("loaded") );
+            img.classList.add("expand-img");
+            img.loading = 'lazy';
         }
     }
 
