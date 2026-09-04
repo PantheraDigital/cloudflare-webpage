@@ -277,6 +277,16 @@ function createBatches(kvKeyList) {
     return resultBatch;
 }
 
+function keysMatch(userKey, secretKey) {
+    const encoder = new TextEncoder();
+    const encodedUK = encoder.encode(userKey);
+    const encodedSK = encoder.encode(secretKey);
+    const lengthsMatch = encodedUK.byteLength === encodedSK.byteLength;
+    return lengthsMatch 
+			? crypto.subtle.timingSafeEqual(encodedUK, encodedSK)
+			: !crypto.subtle.timingSafeEqual(encodedUK, encodedUK);
+}
+
 
 // GET - public get asset
 // POST - internal use only, render html and store
@@ -288,11 +298,12 @@ export default class extends WorkerEntrypoint {
             if (url.pathname !== "/force-render") {
                 return new Response("Not Found", { status: 404 });
             }
+
             const clientApiKey = request.headers.get("X-API-Key");
-            if (!this.env.INTERNAL_API_KEY || clientApiKey !== this.env.INTERNAL_API_KEY) {
+            if (!this.env.INTERNAL_API_KEY || !keysMatch(clientApiKey, this.env.INTERNAL_API_KEY)) {
                 return new Response("Unauthorized: Invalid or Missing API Key", { status: 401 });
             }
-
+            
             try {
                 await this.render();
                 return new Response("Render success", { status: 200 });
@@ -303,9 +314,12 @@ export default class extends WorkerEntrypoint {
 
         } else if (request.method === "GET") {
             if (url.pathname === "/admin") {
-                const REQUIRED_PASSWORD = env.INTERNAL_API_KEY;
+                const REQUIRED_PASSWORD = this.env.INTERNAL_API_KEY;
                 const authHeader = request.headers.get("Authorization");
                 
+                if (!this.env.INTERNAL_API_KEY) {
+                    return new Response("Server Configuration Error", { status: 500 });
+                }
                 if (!authHeader || !authHeader.startsWith("Basic ")) {
                     return new Response("Unauthorized - Username and Password Required", {
                         status: 401,
@@ -330,7 +344,7 @@ export default class extends WorkerEntrypoint {
                     const username = decoded.substring(0, colonIndex).trim();
                     const password = decoded.substring(colonIndex + 1);
 
-                    if (!username || password !== REQUIRED_PASSWORD) {
+                    if (!username || !keysMatch(password, REQUIRED_PASSWORD)) {
                         return new Response("Unauthorized - Username or Password Invalid", {
                             status: 401,
                             headers: { "WWW-Authenticate": 'Basic realm="Admin Webpages"' },
