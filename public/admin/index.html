@@ -26,6 +26,7 @@
         const outputDiv = document.getElementById("request-response");
 
         async function forceRender() {
+            console.log("force render");
             try {
                 const response = await fetch("/force-render", { method: "POST" });
                 outputDiv.innerText = response.text();
