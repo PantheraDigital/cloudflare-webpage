@@ -19,17 +19,16 @@
 </head>
 
 <body>
-    <button type="button" id="force-render" onclick="forceRender">/force-render</button>
+    <button type="button" id="force-render" onclick="forceRender()">/force-render</button>
 
     <div id="request-response"></div>
     <script>
         const outputDiv = document.getElementById("request-response");
 
         async function forceRender() {
-            console.log("force render");
             try {
                 const response = await fetch("/force-render", { method: "POST" });
-                outputDiv.innerText = response.text();
+                outputDiv.innerText = await response.text();
             } catch (error) {
                 outputDiv.innerText = error.message;
             }
