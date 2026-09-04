@@ -24,13 +24,26 @@
     <div id="request-response"></div>
     <script>
         const outputDiv = document.getElementById("request-response");
+        const btn = document.getElementById("force-render");
 
         async function forceRender() {
+            btn.disabled = true;
+            outputDiv.innerText = "Processing request...";
+
             try {
-                const response = await fetch("/force-render", { method: "POST" });
-                outputDiv.innerText = await response.text();
+                const response = await fetch("/admin/force-render", { method: "POST" });
+                
+                const text = await response.text();
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${text}`);
+                }
+                outputDiv.innerText = text;
+
             } catch (error) {
-                outputDiv.innerText = error.message;
+                outputDiv.innerText = "Error: " + error.message;
+
+            } finally {
+                btn.disabled = false;
             }
         }
     </script>
