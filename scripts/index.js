@@ -37,7 +37,7 @@ class KVContentHandler {
             //console.log(`Rendering ${this.type} | Keys:`, JSON.stringify(this.keys.map(k => k.name)));
             // KV get() - max keys 100, response size limit 25MB
             const batches = createBatches(this.keys);
-            let entryCount = 0;
+            const templateData = [];
 
             for (const batch of batches) {
                 const batchKeyNames = batch.map(k => k.name);
@@ -53,8 +53,6 @@ class KVContentHandler {
 
                     const tagHTML = key.metadata.tags?.map((tag) => `<span>${tag}</span>`) ?? "";
 
-                    let htmlChunk = "";
-
                     if (this.type === "post") {
                         // posts
                         //  entryIndex, title, short, body, tags
@@ -62,8 +60,8 @@ class KVContentHandler {
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
                         const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 20) : fullBody;
 
-                        htmlChunk = renderHTMLTemplate(this.template, {
-                            entryIndex: entryCount,
+                        templateData.push({
+                            entryIndex: key.metadata.indexOverride || null,
                             title: title,
                             short: preBody,
                             body: mainBody,
@@ -73,19 +71,33 @@ class KVContentHandler {
                     } else if (this.type === "project") {
                         // projects
                         //  entryIndex, title, body, tags
-                        htmlChunk = renderHTMLTemplate(this.template, {
-                            entryIndex: entryCount,
+                        templateData.push({
+                            entryIndex: key.metadata.indexOverride || null,
                             title: title,
                             body: fullBody,
                             rawTags: key.metadata.tags || "",
                             displayTags: tagHTML.join(" "),
                         });
                     }
-                    
-                    entryCount++;
-                    el.append(htmlChunk + "\n", { html: true });
                 }
             }
+
+            templateData.sort((a, b) => {
+                if (a.entryIndex === null && b.entryIndex === null) {
+                    return 0;
+                } else if (a.entryIndex !== null && b.entryIndex === null) {
+                    return -1;
+                } else if (a.entryIndex === null && b.entryIndex !== null) {
+                    return 1;
+                } else {
+                    return a.entryIndex - b.entryIndex;
+                }
+            });
+
+            templateData.forEach((data, index) => {
+                if (!data.entryIndex) { data.entryIndex = index; }
+                el.append(renderHTMLTemplate(this.template, data) + "\n", { html: true });
+            });
 
         } catch(error) {
             console.error("KVContentHandler error: ", error);
