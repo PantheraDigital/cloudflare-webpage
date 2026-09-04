@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Admin</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Panthera">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+
+        html[data-theme="light"] { color-scheme: light; }
+        html[data-theme="dark"] { color-scheme: dark; }
+    </style>
+</head>
+
+<body>
+    <button type="button" id="force-render" onclick="forceRender">/force-render</button>
+
+    <div id="request-response"></div>
+    <script>
+        const outputDiv = document.getElementById("request-response");
+
+        async function forceRender() {
+            try {
+                const response = await fetch("/force-render", { method: "POST" });
+                outputDiv.innerText = response.text();
+            } catch (error) {
+                outputDiv.innerText = error.message;
+            }
+        }
+    </script>
+</body>
+
+</html>
