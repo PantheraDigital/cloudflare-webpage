@@ -42,10 +42,10 @@ class KVContentHandler {
             for (const batch of batches) {
                 const batchKeyNames = batch.map(k => k.name);
                 const entries = await this.env.HTML_KV.get(batchKeyNames);
-                
+
                 for (const key of batch) {
                     const rawBody = entries.get(key.name) || "";
-                    
+
                     const defaultTitle = key.name.slice(this.prefix.length);
                     const title = this.extractH1Title(rawBody, defaultTitle);
                     const fullBody = title === defaultTitle ? rawBody :
@@ -99,7 +99,7 @@ class KVContentHandler {
                 el.append(renderHTMLTemplate(this.template, data) + "\n", { html: true });
             });
 
-        } catch(error) {
+        } catch (error) {
             console.error("KVContentHandler error: ", error);
             el.append("<!-- Error loading content -->", { html: true });
         }
@@ -108,113 +108,113 @@ class KVContentHandler {
 
 // ai
 function renderHTMLTemplate(template, data) {
-  // Helper to safely resolve a single variable or literal value
-  function resolveValue(token) {
-    token = token.trim();
-    if (!token) return '';
-    
-    // Handle string literals
-    const firstChar = token[0];
-    if ((firstChar === "'" || firstChar === '"') && token.endsWith(firstChar)) {
-      return token.slice(1, -1);
-    }
-    
-    // Handle booleans/null
-    if (token === 'true') return true;
-    if (token === 'false') return false;
-    if (token === 'null' || token === 'undefined') return '';
-    
-    // Handle numeric literals
-    if (!isNaN(Number(token))) return Number(token);
-    
-    // Handle object key lookups
-    return data.hasOwnProperty(token) ? data[token] : '';
-  }
+    // Helper to safely resolve a single variable or literal value
+    function resolveValue(token) {
+        token = token.trim();
+        if (!token) return '';
 
-  // Safe expression evaluator
-  function safeEval(expr) {
-    expr = expr.trim();
+        // Handle string literals
+        const firstChar = token[0];
+        if ((firstChar === "'" || firstChar === '"') && token.endsWith(firstChar)) {
+            return token.slice(1, -1);
+        }
 
-    // Check if expression is a ternary: condition ? trueVal : falseVal
-    const ternaryMatch = expr.match(/^(.+?)\?(.*):(.*)$/);
+        // Handle booleans/null
+        if (token === 'true') return true;
+        if (token === 'false') return false;
+        if (token === 'null' || token === 'undefined') return '';
 
-    if (ternaryMatch) {
-      const conditionExpr = ternaryMatch[1].trim();
-      const trueExpr = ternaryMatch[2].trim();
-      const falseExpr = ternaryMatch[3].trim();
+        // Handle numeric literals
+        if (!isNaN(Number(token))) return Number(token);
 
-      const conditionValue = resolveValue(conditionExpr);
-      const isTruthy = Array.isArray(conditionValue) ? conditionValue.length > 0 : Boolean(conditionValue);
-
-      const chosenExpr = isTruthy ? trueExpr : falseExpr;
-
-      // Check if chosen branch contains nested template literals (`...`)
-      if (chosenExpr.startsWith('`') && chosenExpr.endsWith('`')) {
-        const innerContent = chosenExpr.slice(1, -1);
-        return renderHTMLTemplate(innerContent, data);
-      }
-
-      return resolveValue(chosenExpr);
+        // Handle object key lookups
+        return data.hasOwnProperty(token) ? data[token] : '';
     }
 
-    // Standard variable lookup (e.g., "tags.join(', ')")
-    if (expr.includes('.join(')) {
-      const [arrName, glue] = expr.split('.join(');
-      const cleanGlue = glue.replace(/['"`)]/g, '');
-      const arr = data[arrName.trim()];
-      return Array.isArray(arr) ? arr.join(cleanGlue) : '';
+    // Safe expression evaluator
+    function safeEval(expr) {
+        expr = expr.trim();
+
+        // Check if expression is a ternary: condition ? trueVal : falseVal
+        const ternaryMatch = expr.match(/^(.+?)\?(.*):(.*)$/);
+
+        if (ternaryMatch) {
+            const conditionExpr = ternaryMatch[1].trim();
+            const trueExpr = ternaryMatch[2].trim();
+            const falseExpr = ternaryMatch[3].trim();
+
+            const conditionValue = resolveValue(conditionExpr);
+            const isTruthy = Array.isArray(conditionValue) ? conditionValue.length > 0 : Boolean(conditionValue);
+
+            const chosenExpr = isTruthy ? trueExpr : falseExpr;
+
+            // Check if chosen branch contains nested template literals (`...`)
+            if (chosenExpr.startsWith('`') && chosenExpr.endsWith('`')) {
+                const innerContent = chosenExpr.slice(1, -1);
+                return renderHTMLTemplate(innerContent, data);
+            }
+
+            return resolveValue(chosenExpr);
+        }
+
+        // Standard variable lookup (e.g., "tags.join(', ')")
+        if (expr.includes('.join(')) {
+            const [arrName, glue] = expr.split('.join(');
+            const cleanGlue = glue.replace(/['"`)]/g, '');
+            const arr = data[arrName.trim()];
+            return Array.isArray(arr) ? arr.join(cleanGlue) : '';
+        }
+
+        return resolveValue(expr);
     }
 
-    return resolveValue(expr);
-  }
+    let result = '';
+    let lastIndex = 0;
 
-  let result = '';
-  let lastIndex = 0;
-  
-  // Jump chunk-by-chunk instead of character-by-character
-  let startIdx = template.indexOf('${', lastIndex);
+    // Jump chunk-by-chunk instead of character-by-character
+    let startIdx = template.indexOf('${', lastIndex);
 
-  while (startIdx !== -1) {
-    // Append the static HTML chunk before the placeholder
-    result += template.slice(lastIndex, startIdx);
+    while (startIdx !== -1) {
+        // Append the static HTML chunk before the placeholder
+        result += template.slice(lastIndex, startIdx);
 
-    let braceDepth = 1;
-    let inString = null;
-    let j = startIdx + 2;
+        let braceDepth = 1;
+        let inString = null;
+        let j = startIdx + 2;
 
-    // Fast-forward to find the matching closing brace
-    while (j < template.length && braceDepth > 0) {
-      const char = template[j];
-      const prevChar = template[j - 1];
+        // Fast-forward to find the matching closing brace
+        while (j < template.length && braceDepth > 0) {
+            const char = template[j];
+            const prevChar = template[j - 1];
 
-      if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
-        if (inString === null) inString = char;
-        else if (inString === char) inString = null;
-      } else if (!inString) {
-        if (char === '{') braceDepth++;
-        else if (char === '}') braceDepth--;
-      }
-      j++;
+            if ((char === '"' || char === "'" || char === '`') && prevChar !== '\\') {
+                if (inString === null) inString = char;
+                else if (inString === char) inString = null;
+            } else if (!inString) {
+                if (char === '{') braceDepth++;
+                else if (char === '}') braceDepth--;
+            }
+            j++;
+        }
+
+        if (braceDepth === 0) {
+            const expression = template.slice(startIdx + 2, j - 1);
+            result += safeEval(expression);
+            lastIndex = j;
+        } else {
+            // Failsafe: if brackets are malformed, output the literal '${' and move on
+            result += '${';
+            lastIndex = startIdx + 2;
+        }
+
+        startIdx = template.indexOf('${', lastIndex);
     }
 
-    if (braceDepth === 0) {
-      const expression = template.slice(startIdx + 2, j - 1);
-      result += safeEval(expression);
-      lastIndex = j;
-    } else {
-      // Failsafe: if brackets are malformed, output the literal '${' and move on
-      result += '${';
-      lastIndex = startIdx + 2;
-    }
+    // Append any remaining static HTML after the last placeholder
+    result += template.slice(lastIndex);
 
-    startIdx = template.indexOf('${', lastIndex);
-  }
-
-  // Append any remaining static HTML after the last placeholder
-  result += template.slice(lastIndex);
-
-  // Strip empty lines using Regex instead of Array split/filter/join
-  return result.replace(/^\s*$(?:\r\n?|\n)/gm, '');
+    // Strip empty lines using Regex instead of Array split/filter/join
+    return result.replace(/^\s*$(?:\r\n?|\n)/gm, '');
 }
 
 
@@ -225,8 +225,8 @@ async function renderPage(env) {
     // list return [{keys:[{ name:"", expiration:num, metadata:{} }], list_complete:bool, cursor:""}]
     const [htmlRes, postKVList, projectKVList] = await Promise.all([
         env.ASSETS.fetch(new Request(new URL("/index.html", "http://dummy"))),
-        env.HTML_KV.list({prefix: env.POST_PREFIX, limit: 1000}),
-        env.HTML_KV.list({prefix: env.PROJECT_PREFIX, limit: 1000})
+        env.HTML_KV.list({ prefix: env.POST_PREFIX, limit: 1000 }),
+        env.HTML_KV.list({ prefix: env.PROJECT_PREFIX, limit: 1000 })
     ]);
     if (!htmlRes.ok) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
@@ -254,7 +254,7 @@ function createBatches(kvKeyList) {
 
     let currentBatch = []; // [[{ name:"", expiration:num, metadata:{} }, ...], ...]
     let currentBatchSize = 0; // key.metadata.size = char count. 1 char = 1 byte
-    
+
     for (const key of kvKeyList) {
         const size = parseInt(key.metadata.size || 0);
         if (size > maxBatchSize) {
@@ -300,14 +300,51 @@ export default class extends WorkerEntrypoint {
                 console.error("Render failure:", error.message);
                 return new Response(`Render failure: ${error.message}`, { status: 500 });
             }
-            
+
         } else if (request.method === "GET") {
-            if (url.pathname === "/test") {
-                try {
-                    throw new Error("No Tests.");
-                } catch (error) {
-                    return new Response(`Test failure: ${error.message}`, { status: 500 });
+            if (url.pathname === "/admin") {
+                const REQUIRED_PASSWORD = env.INTERNAL_API_KEY;
+                const authHeader = request.headers.get("Authorization");
+                
+                if (!authHeader || !authHeader.startsWith("Basic ")) {
+                    return new Response("Unauthorized - Username and Password Required", {
+                        status: 401,
+                        headers: {
+                            "WWW-Authenticate": 'Basic realm="Admin Webpages"',
+                        },
+                    });
                 }
+                
+                try {
+                    const encoded = authHeader.substring(6);
+                    const decoded = atob(encoded);
+
+                    const colonIndex = decoded.indexOf(":");
+                    if (colonIndex === -1) {
+                        return new Response("Unauthorized - Invalid Auth Format", {
+                            status: 401,
+                            headers: { "WWW-Authenticate": 'Basic realm="Admin Webpages"' },
+                        });
+                    }
+
+                    const username = decoded.substring(0, colonIndex).trim();
+                    const password = decoded.substring(colonIndex + 1);
+
+                    if (!username || password !== REQUIRED_PASSWORD) {
+                        return new Response("Unauthorized - Username or Password Invalid", {
+                            status: 401,
+                            headers: { "WWW-Authenticate": 'Basic realm="Admin Webpages"' },
+                        });
+                    }
+
+                    console.log(`[ACTION] ${username} - ${request.method} ${url.pathname}`);
+                    return this.env.ASSETS.fetch(request);
+
+                } catch (error) {
+                    console.error(error.message);
+                    return new Response("Internal Server Error", { status: 500 });
+                }
+                
             }
 
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
@@ -317,7 +354,7 @@ export default class extends WorkerEntrypoint {
             try {
                 const renderedHTML = await this.env.HTML_KV.get("html_render");
                 if (renderedHTML) {
-                    return new Response(renderedHTML, {headers: { "Content-Type": "text/html;charset=UTF-8" }});
+                    return new Response(renderedHTML, { headers: { "Content-Type": "text/html;charset=UTF-8" } });
                 }
             } catch (error) {
                 console.error("HTML gathering failure", error.message);
@@ -332,7 +369,7 @@ export default class extends WorkerEntrypoint {
             const newHTML = await renderPage(this.env);
             await this.env.HTML_KV.put("html_render", newHTML.body)
                 .catch(err => console.error("Failed to save render to KV:", err));
-            
+
             console.log("Render success");
         } catch (error) {
             console.error("Render failure:", error.message);
