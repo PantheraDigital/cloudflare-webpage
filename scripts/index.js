@@ -295,7 +295,7 @@ export default class extends WorkerEntrypoint {
         const url = new URL(request.url);
 
         if (request.method === "POST") {
-            if (url.pathname !== "/force-render") {
+            if (url.pathname !== "/admin/force-render") {
                 return new Response("Not Found", { status: 404 });
             }
 
