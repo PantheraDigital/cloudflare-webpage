@@ -61,7 +61,7 @@ class KVContentHandler {
                         const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 20) : fullBody;
 
                         templateData.push({
-                            entryIndex: key.metadata.indexOverride || null,
+                            entryIndex: key.metadata.indexOverride ?? null,
                             title: title,
                             short: preBody,
                             body: mainBody,
@@ -72,7 +72,7 @@ class KVContentHandler {
                         // projects
                         //  entryIndex, title, body, tags
                         templateData.push({
-                            entryIndex: key.metadata.indexOverride || null,
+                            entryIndex: key.metadata.indexOverride ?? null,
                             title: title,
                             body: fullBody,
                             rawTags: key.metadata.tags || "",
@@ -83,19 +83,18 @@ class KVContentHandler {
             }
 
             templateData.sort((a, b) => {
-                if (a.entryIndex === null && b.entryIndex === null) {
-                    return 0;
-                } else if (a.entryIndex !== null && b.entryIndex === null) {
-                    return -1;
-                } else if (a.entryIndex === null && b.entryIndex !== null) {
-                    return 1;
-                } else {
-                    return a.entryIndex - b.entryIndex;
-                }
+                const aHasIndex = a.entryIndex !== null && a.entryIndex !== undefined;
+                const bHasIndex = b.entryIndex !== null && b.entryIndex !== undefined;
+
+                if (!aHasIndex && !bHasIndex) return 0;
+                if (aHasIndex && !bHasIndex) return -1;
+                if (!aHasIndex && bHasIndex) return 1;
+                
+                return a.entryIndex - b.entryIndex;
             });
 
             templateData.forEach((data, index) => {
-                if (!data.entryIndex) { data.entryIndex = index; }
+                if (data.entryIndex === null || data.entryIndex === undefined) { data.entryIndex = index; }
                 el.append(renderHTMLTemplate(this.template, data) + "\n", { html: true });
             });
 
@@ -287,11 +286,10 @@ function keysMatch(userKey, secretKey) {
         : !crypto.subtle.timingSafeEqual(encodedUK, encodedUK);
 }
 
-function authenticate(request, env) {
-    const REQUIRED_PASSWORD = env.INTERNAL_API_KEY;
+function authenticate(request, internalKey) {
     const authHeader = request.headers.get("Authorization");
 
-    if (!REQUIRED_PASSWORD) {
+    if (!internalKey) {
         return { response: new Response("Server Configuration Error", { status: 500 })};
     }
     if (!authHeader || !authHeader.startsWith("Basic ")) {
@@ -321,7 +319,7 @@ function authenticate(request, env) {
         const username = decoded.substring(0, colonIndex).trim();
         const password = decoded.substring(colonIndex + 1);
 
-        if (!username || !keysMatch(password, REQUIRED_PASSWORD)) {
+        if (!username || !keysMatch(password, internalKey)) {
             return {
                 response: new Response("Unauthorized - Username or Password Invalid", {
                     status: 401,
@@ -353,7 +351,7 @@ export default class extends WorkerEntrypoint {
                 return new Response("Not Found", { status: 404 });
             }
 
-            const authRes = authenticate(request, this.env);
+            const authRes = authenticate(request, this.env.INTERNAL_API_KEY);
             if (!authRes.response.ok) {
                 return authRes.response;
             }
@@ -368,7 +366,7 @@ export default class extends WorkerEntrypoint {
 
         } else if (request.method === "GET") {
             if (url.pathname === "/admin") {
-                const authRes = authenticate(request, this.env);
+                const authRes = authenticate(request, this.env.INTERNAL_API_KEY);
                 if (!authRes.response.ok) {
                     return authRes.response;
                 }
