@@ -15,12 +15,18 @@
 
         html[data-theme="light"] { color-scheme: light; }
         html[data-theme="dark"] { color-scheme: dark; }
+
+        a{
+            font-family: monospace;
+            display: block; 
+            padding: 0 5px;
+        }
     </style>
 </head>
 
 <body>
     <a href="/">/</a>
-    <button type="button" id="force-render" onclick="forceRender()">/force-render</button>
+    <a href="" id="force-render" onclick="forceRender()">/force-render</a>
 
     <div id="request-response"></div>
     <script>
