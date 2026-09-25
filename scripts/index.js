@@ -6,7 +6,7 @@
 */
 import { WorkerEntrypoint } from "cloudflare:workers";
 import projectTemplate from "../templates/project-template.html";
-import postTemplate from "../templates/post-template.html";
+import articleTemplate from "../templates/article-template.html";
 
 class KVContentHandler {
     constructor(env, keys, type, template, prefix) {
@@ -53,8 +53,8 @@ class KVContentHandler {
 
                     const tagHTML = key.metadata.tags?.map((tag) => `<span>${tag}</span>`) ?? "";
 
-                    if (this.type === "post") {
-                        // posts
+                    if (this.type === "articles") {
+                        // articles
                         //  entryIndex, title, short, body, tags
                         const splitIndex = fullBody.indexOf('<hr class="page-br">');
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
@@ -234,11 +234,11 @@ async function renderPage(env) {
     const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === true);
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === true);
 
-    if (postKeys.length === 0) { console.warn("Post Keys empty"); }
+    if (postKeys.length === 0) { console.warn("Article Keys empty"); }
     if (projectKeys.length === 0) { console.warn("Project Keys empty"); }
 
     const rewriter = new HTMLRewriter()
-        .on('div#posts-container', new KVContentHandler(env, postKeys, "post", postTemplate, env.POST_PREFIX))
+        .on('div#articles-container', new KVContentHandler(env, postKeys, "article", articleTemplate, env.POST_PREFIX))
         .on('div#projects-container', new KVContentHandler(env, projectKeys, "project", projectTemplate, env.PROJECT_PREFIX));
 
     return rewriter.transform(htmlRes);
