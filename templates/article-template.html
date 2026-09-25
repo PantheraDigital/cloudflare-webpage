@@ -1,0 +1,16 @@
+<article class="entry" data-tags="${rawTags}" data-original-index="${entryIndex}">
+    <details class="article-details" name="articles">
+        <summary>
+            <h3 class="article-title">${title}</h3>
+            <div class="article-intro">
+                ${short}
+                <p name="tags">tags: ${displayTags}</p>
+            </div>
+        </summary>
+        <div class="article-body">
+            ${body}
+            <p name="tags">tags: ${displayTags}</p>
+            <input type="button" value="minimize" onclick="this.parentElement.parentElement.removeAttribute('open')"/>
+        </div>
+    </details>
+</article>
