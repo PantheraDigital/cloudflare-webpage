@@ -884,12 +884,12 @@ body {
 
 .project-details summary:hover .project-title,
 .post-details summary:hover .post-title {
-  text-decoration: underline cyan 2px;
+  text-decoration: underline var(--nav-text-color-hover, blue) 2px;
 }
 
 .project-details[open] .project-title,
 .post-details[open] .post-title {
-  text-decoration: underline magenta 2px;
+  text-decoration: underline var(--nav-text-color-selected, blueviolet) 2px;
 }
 
 
