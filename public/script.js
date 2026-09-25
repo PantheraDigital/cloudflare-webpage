@@ -228,7 +228,7 @@ function initPage() {
     // entry sorting
     let allEntryTags = {};
     const projects = document.querySelector('#projects-container').querySelectorAll(".project-details");
-    const posts = document.querySelector('#posts-container').querySelectorAll(".post-details");
+    const articles = document.querySelector('#articles-container').querySelectorAll(".post-details");
 
     let tagGroup = "projects";
     for (const entry of projects) {
@@ -244,8 +244,8 @@ function initPage() {
         }
     }
 
-    tagGroup = "posts";
-    for (const entry of posts) {
+    tagGroup = "articles";
+    for (const entry of articles) {
         const entryTags = entry.parentElement.getAttribute("data-tags").split(",").map((element) => element = element.trim());
         let newSet = (Object.hasOwn(allEntryTags, tagGroup)) ? [...allEntryTags[tagGroup], ...entryTags] : entryTags;
         allEntryTags[tagGroup] = new Set(newSet);
