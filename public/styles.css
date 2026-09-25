@@ -77,7 +77,7 @@
   --slide-border-color: rgb(177, 178, 186);
 
   --text-color: white;
-  --text-color-dim: grey;
+  --text-color-dim: rgb(170, 170, 170);
   
   --nav-text-color-nutral: white;
   --nav-text-color-hover: LinkText;
@@ -272,7 +272,7 @@ body {
 .icon {
   --mask: none;
   --mask-size: auto;
-  --color: black;
+  --color: var(--text-color);
   position: relative;
   display: inline-block;
   vertical-align: text-top;
@@ -296,10 +296,10 @@ body {
 }
 @media (hover: hover) {
   .icon.header-link{
-    --color: grey;
+    --color: var(--text-color-dim);
   }
   .icon.header-link:hover{
-    --color: black;
+    --color: var(--text-color);
   }
 }
 .icon.header-link:focus{
@@ -901,6 +901,41 @@ body {
   .text-list {
     padding-left: 20px;
   }
+}
+
+/***  Sort Bar  ***/
+.sort-bar-dock {
+  position: sticky; 
+  bottom: 0; 
+  text-align: right; 
+  margin: 0 5px 0 0; 
+  padding: 13px 0 0 0; 
+  background-color: inherit; 
+  border-top: 2px solid var(--slide-border-color); 
+  border-image: linear-gradient(270deg, var(--slide-border-color), transparent 90%) 1;
+}
+
+.sort-bar-dock fieldset {
+  border: none; 
+  min-width: 100%; 
+  min-inline-size: 100%; 
+  box-sizing: border-box;
+}
+
+.sort-bar-dock legend {
+  display: inline-block; 
+  width: 100%;
+}
+
+.sort-bar-input-container {
+  display: inline-block; 
+  width: 100%; 
+  overflow-x: auto; 
+  padding-bottom: 10px;
+}
+
+.sort-bar-input-label {
+  cursor: pointer;
 }
 
 /***  Day/Night Toggle  ***/

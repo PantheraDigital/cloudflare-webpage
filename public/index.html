@@ -11,11 +11,11 @@
 
 <body>
     <template id="tag-selector-template">
-        <div style="position: sticky; bottom: 0; text-align: right; margin: 0 5px 0 0; padding: 13px 0 0 0; background-color: inherit; border-top: 2px solid grey; border-image: linear-gradient(270deg, grey, transparent 90%) 1;">
-            <fieldset style="border: none; min-width: 100%; min-inline-size: 100%; box-sizing: border-box;">
-                <legend style="display: inline-block; width: 100%;"><b>sort</b></legend>
-                <span style="display: inline-block; width: 100%; overflow-x: auto; padding-bottom: 10px;">
-                    <label for="projectNone"><input type="radio" id="projectNone" name="project-sort" value="None" /><span>None</span></label>
+        <div class="sort-bar-dock">
+            <fieldset>
+                <legend><b>sort</b></legend>
+                <span class="sort-bar-input-container">
+                    <label class="sort-bar-input-label" for="projectNone"><input type="radio" id="projectNone" name="project-sort" value="None" /><span>None</span></label>
                 </span>
             </fieldset>
         </div>
