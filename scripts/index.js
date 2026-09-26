@@ -81,7 +81,7 @@ class KVContentHandler {
                     }
                 }
             }
-console.log(JSON.stringify(templateData))
+console.log(templateData)
             templateData.sort((a, b) => {
                 const aHasIndex = a.entryIndex !== null && a.entryIndex !== undefined;
                 const bHasIndex = b.entryIndex !== null && b.entryIndex !== undefined;
@@ -236,7 +236,7 @@ async function renderPage(env) {
 
     if (postKeys.length === 0) { console.warn("Article Keys empty"); }
     if (projectKeys.length === 0) { console.warn("Project Keys empty"); }
-console.log(postKeys.toString())
+console.log(postKeys.join())
     const rewriter = new HTMLRewriter()
         .on('div#articles-container', new KVContentHandler(env, postKeys, "article", articleTemplate, env.POST_PREFIX))
         .on('div#projects-container', new KVContentHandler(env, projectKeys, "project", projectTemplate, env.PROJECT_PREFIX));
