@@ -59,7 +59,7 @@ class KVContentHandler {
                         const splitIndex = fullBody.indexOf('<hr class="page-br">');
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
                         const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 20) : fullBody;
-console.log(title)
+
                         templateData.push({
                             entryIndex: key.metadata.indexOverride ?? null,
                             title: title,
@@ -231,7 +231,7 @@ async function renderPage(env) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
     }
 
-    const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === true);
+    const postKeys = postKVList.keys.filter((entry) => {console.log(entry.metadata?.live); return entry.metadata?.live === true;});
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === true);
 
     if (postKeys.length === 0) { console.warn("Article Keys empty"); }
