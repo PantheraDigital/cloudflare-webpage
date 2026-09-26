@@ -53,7 +53,7 @@ class KVContentHandler {
 
                     const tagHTML = key.metadata.tags?.map((tag) => `<span>${tag}</span>`) ?? "";
 
-                    if (this.type === "articles") {
+                    if (this.type === "article") {
                         // articles
                         //  entryIndex, title, short, body, tags
                         const splitIndex = fullBody.indexOf('<hr class="page-br">');
@@ -231,7 +231,7 @@ async function renderPage(env) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
     }
 
-    const postKeys = postKVList.keys.filter((entry) => {console.log(JSON.stringify(entry.metadata)); return entry.metadata?.live === true;});
+    const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === true);
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === true);
 
     if (postKeys.length === 0) { console.warn("Article Keys empty"); }
