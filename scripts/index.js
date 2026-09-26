@@ -59,7 +59,7 @@ class KVContentHandler {
                         const splitIndex = fullBody.indexOf('<hr class="page-br">');
                         const preBody = splitIndex !== -1 ? fullBody.slice(0, splitIndex) : "";
                         const mainBody = splitIndex !== -1 ? fullBody.slice(splitIndex + 20) : fullBody;
-
+console.log(title)
                         templateData.push({
                             entryIndex: key.metadata.indexOverride ?? null,
                             title: title,
@@ -81,7 +81,7 @@ class KVContentHandler {
                     }
                 }
             }
-console.log(templateData)
+
             templateData.sort((a, b) => {
                 const aHasIndex = a.entryIndex !== null && a.entryIndex !== undefined;
                 const bHasIndex = b.entryIndex !== null && b.entryIndex !== undefined;
@@ -231,12 +231,12 @@ async function renderPage(env) {
         throw new Error(`Failed to load base HTML: ${htmlRes.status} ${htmlRes.statusText}`);
     }
 
-    const postKeys = postKVList.keys.filter((entry) => entry.metadata?.live === true);
+    const postKeys = postKVList.keys.filter((entry) => {console.log(entry.name); return entry.metadata?.live === true;});
     const projectKeys = projectKVList.keys.filter((entry) => entry.metadata?.live === true);
 
     if (postKeys.length === 0) { console.warn("Article Keys empty"); }
     if (projectKeys.length === 0) { console.warn("Project Keys empty"); }
-console.log(postKeys.join())
+
     const rewriter = new HTMLRewriter()
         .on('div#articles-container', new KVContentHandler(env, postKeys, "article", articleTemplate, env.POST_PREFIX))
         .on('div#projects-container', new KVContentHandler(env, projectKeys, "project", projectTemplate, env.PROJECT_PREFIX));
