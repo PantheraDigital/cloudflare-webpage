@@ -821,7 +821,7 @@ body {
 .project-body,
 .article-intro,
 .article-body {
-  border-left: solid black 1px;
+  border-left: solid var(--text-color) 1px;
   padding-left: 13.768px; /* marker width */
 }
 
