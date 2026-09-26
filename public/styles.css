@@ -799,19 +799,19 @@ body {
   margin: 0 0 16px 0;
 }
 
-.post-details {
+.article-details {
   margin: 24px 0;
 }
 
 .project-details,
-.post-details {
+.article-details {
   white-space: normal;
   word-wrap: break-word;
   overflow-wrap: break-word;
 }
 
 .project-title,
-.post-title {
+.article-title {
   display: inline-block;
   margin: 0 0 5px 0;
   font-size: large;
@@ -819,26 +819,26 @@ body {
 
 .project-intro,
 .project-body,
-.post-intro,
-.post-body {
+.article-intro,
+.article-body {
   border-left: solid black 1px;
   padding-left: 13.768px; /* marker width */
 }
 
 .project-intro p[name="tags"],
 .project-body *:first-child,
-.post-intro p:first-child,
-.post-body *:first-child {
+.article-intro p:first-child,
+.article-body *:first-child {
   margin-top: 0;
 }
 
 .project-details p[name="tags"],
-.post-details p[name="tags"] {
+.article-details p[name="tags"] {
   font-style: italic;
 }
 
 .project-details p[name="tags"] span,
-.post-details p[name="tags"] span {
+.article-details p[name="tags"] span {
   border-right: 1px solid var(--text-color-dim);
   border-left: 1px solid var(--text-color-dim);
   border-radius: 5px;
@@ -850,7 +850,7 @@ body {
   margin-bottom: 0;
 }
 
-.post-intro p[name="tags"] {
+.article-intro p[name="tags"] {
   margin-top: 10px;
   margin-bottom: 0;
 }
@@ -859,19 +859,19 @@ body {
   display: none;
 }
 
-.post-details[open] .post-intro p[name="tags"] {
+.article-details[open] .article-intro p[name="tags"] {
   visibility: hidden;
   height: 0;
 }
 
-.post-details img,
+.article-details img,
 .project-details img {
   width: 250px;
   height: 156px;
   background-color: var(--text-color-dim);
 }
 
-.post-details img.loaded,
+.article-details img.loaded,
 .project-details img.loaded {
   width: 250px;
   height: auto;
@@ -879,17 +879,17 @@ body {
 }
 
 #projects-container .project-details:first-child,
-#articles-container .post-details:first-child {
+#articles-container .article-details:first-child {
   margin-top: 0;
 }
 
 .project-details summary:hover .project-title,
-.post-details summary:hover .post-title {
+.article-details summary:hover .article-title {
   text-decoration: underline var(--nav-text-color-hover, blue) 2px;
 }
 
 .project-details[open] .project-title,
-.post-details[open] .post-title {
+.article-details[open] .article-title {
   text-decoration: underline var(--nav-text-color-selected, blueviolet) 2px;
 }
 
