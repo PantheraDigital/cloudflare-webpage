@@ -225,6 +225,44 @@ function initPage() {
         });
     }
 
+    const initTiltParallax = () => {
+        // gamma: left-to-right tilt (-90 to 90)
+        // beta: front-to-back tilt (-180 to 180)
+        window.addEventListener("deviceorientation", (e) => {
+            if (!windowLayer.classList.contains("remove")) {
+                return;
+            }
+
+            // Adjust sensitivity multipliers as needed
+            const tiltX = e.gamma ? e.gamma * 2 : 0; // Left/Right tilt mapped to X
+            const tiltY = e.beta ? (e.beta - 45) * 2 : 0; // Front/Back tilt mapped to Y (offset by 45deg typical holding angle)
+
+            updateParaLayers(paraList, paraXList, tiltX, tiltY);
+        });
+    };
+
+    // Handle iOS 13+ permission request if required
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+        // iOS devices require a user gesture (like a tap) to enable sensors.
+        // You can attach this to a button click or tap anywhere on the screen once.
+        const requestMotionPermission = () => {
+            DeviceOrientationEvent.requestPermission()
+                .then(response => {
+                    if (response === 'granted') {
+                        initTiltParallax();
+                    }
+                })
+                .catch(console.error);
+            // Remove listener after first click so it doesn't fire repeatedly
+            document.removeEventListener("click", requestMotionPermission);
+        };
+
+        document.addEventListener("click", requestMotionPermission);
+    } else if (window.DeviceOrientationEvent) {
+        // Android / standard devices that don't require explicit permission
+        initTiltParallax();
+    }
+
     // display windows
     const appLayer = document.getElementById("app-layer");
     document.querySelectorAll(".close-display-window").forEach((element) => {
