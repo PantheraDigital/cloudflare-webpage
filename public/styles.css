@@ -506,6 +506,11 @@ img.v-center {
 #game-cell {
   --column: -1; --row: -2;
 }
+@media (max-width: 480px) and (max-height: 780px) {
+  #link-cell {
+    --column: 0; --row: 3;
+  }
+}
 @media (max-width: 334px) {
   #article-cell {
     --column: 0; --row: 2;
