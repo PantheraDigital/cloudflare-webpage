@@ -15,6 +15,7 @@
     <meta property="og:image:alt" content="An image preview of the website depicting the name Panthera above three buttons labled about, projects, and links. Next to this is a circle with pink at the top gradually becoming blue before the bottom allong with the image of four scratch marks over the circle.">
     <meta property="og:url" content="https://cloudflare-webpage.panthera-digital.workers.dev/">
     
+    <link rel="preload" as="image" type="image/webp" href="imgs/logo/logo.webp" fetchpriority="high">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -29,244 +30,312 @@
             <fieldset>
                 <legend><b>sort</b></legend>
                 <span class="sort-bar-input-container">
-                    <label class="sort-bar-input-label" for="projectNone"><input type="radio" id="projectNone" name="project-sort" value="None" /><span>None</span></label>
+                    <label class="sort-bar-input-label"><input type="radio" id="projectNone" name="project-sort" value="None" /><span>None</span></label>
                 </span>
             </fieldset>
         </div>
     </template>
 
-    <div id="bg-layer" class="page-layer bg">
-        <span class="crt3">
-            <span class="page-panel gradient-bg">
-            </span>
-            <span class="page-panel arch-bg">
-            </span>
-            <span class="page-panel lower gradient-bg-lower">
-            </span>
-            <span class="noise" style="position: absolute; inset: 0;"></span>
-            <span class="cloud main-cloud"></span>
-        </span>
-
-        <span
-            style="pointer-events: none; position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <span class="logo-wrapper">
-                <img class="logo-img" src="imgs/logo/logo.webp"
-                    alt="Panthera's logo depicting a tiger skull over a neon sunset." loading="lazy">
-                <span class="logo-shape-wrapper">
-                    <span class="logo-shape"></span>
-                </span>
-            </span>
-            <h1>PANTHERA DIGITAL</h1>
-        </span>
-
-        <input type="checkbox" id="display-mode-toggle" class="display-toggle">
-        <label for="display-mode-toggle" class="display-toggle-lable"></label>
-    </div>
-
-    <div class="page-layer fg">
-        <div style="height: 90vh;"></div>
-        <nav id="page-nav">
-            <a href="#about" class="nav-button">About</a>
-            <a href="#projects" class="nav-button">Projects</a>
-            <a href="#articles" class="nav-button">Articles</a>
-        </nav>
-    </div>
-
-    <div class="page-layer mg">
-        <div id="slide-list" class="slide-list">
-
-            <div id="about" class="slide-element">
-                <div class="main-block">
-                    <section class="main-content">
-                        <span class="page-title underline-title comp">
-                            <h2>About</h2> / <h3>sub</h3>
-                            <button type="button" title="copy link to page" class="strip-button icon header-link"></button>
-                        </span>
-                        
-                        <div class="about-body">
-                            <span class="about-nav-container">
-                                <nav class="about-nav">
-                                    <a href="#about-digital">Digital</a>
-                                    <a href="#about-physical">Physical</a>
-                                    <a href="#about-contact">Contact & Links</a>
-                                </nav>
-                            </span><span class="about-subpage-container">
-                                <main id="about-digital" name="about-subpage" class="about-subpage" data-topic="Panthera Digital">
-                                    <p class="large-text">I am <i>Panthera</i> and I like to solve problems. Software provides endless problems.</p>
-
-                                    <br>
-                                    <span class="boxed-list">
-                                    <p><mark>Education</mark></p>
-                                    <ul>
-                                        <li>BS CS - <i>2026</i></li>
-                                        <li>Cybersecurity Certificate - <i>in progress</i></li>
-                                    </ul>
-                                    </span>
-
-                                    <br>
-                                    <span class="boxed-list">
-                                    <p><mark>Programming Languages</mark></p>
-                                    <ul>
-                                        <li>C++, C#, Python, JS, GD Script</li>
-                                    </ul>
-                                    </span>
-                                    
-                                    <br>
-                                    <span class="boxed-list">
-                                    <p><mark>Areas of Interest</mark></p>
-                                    <ul>
-                                        <li>Game Development - <i>gameplay programming</i></li>
-                                        <li>Web Development - <i>frontend, backend, cloud</i></li>
-                                        <li>Cybersecurity - <i>blue team</i></li>
-                                    </ul>
-                                    </span>
-                                    
-                                    <br>
-                                    <span class="boxed-list">
-                                    <p><mark>Game Engines</mark></p>
-                                    <ul>
-                                        <li>Unity v2019, UE 5, Godot 4</li>
-                                    </ul>
-                                    </span>
-                                    
-                                    <br>
-                                    <span class="boxed-list">
-                                    <p><mark>Quick Facts</mark></p>
-                                    <ul>
-                                        <li>Built my own PC in 2017, still in use.</li>
-                                        <li>Switched from Windows to Linux in 2024.</li>
-                                        <li>I like problem solving.</li>
-                                    </ul>
-                                    </span>
-                                    
-                                </main>
-                                <hr>
-                                <div id="about-physical" name="about-subpage" class="about-subpage" data-topic="Panthera Physical">
-                                    <p class="large-text">
-                                        Outside of the digital space I've explored other forms of creative work.
-                                    </p>
-
-                                    <br>
-                                    <span class="boxed-list">
-                                        <p><mark>Crafting</mark></p>
-                                        <ul>
-                                            <li>metal roses from sheet metal</li>
-                                            <li>bits of wood working</li>
-                                            <li>explored welding in high school</li>
-                                            <li>built a forge for a summer in an attempt to make knives from rebar</li>
-                                        </ul>
-                                        <div class="img-row">
-                                            <img class="expand-img center" loading="lazy" style="height: 360px;" src="https://pics.panthera-digital.com/webpage/crafts/metal-roses(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/crafts/metal-roses.webp">
-                                            <img class="expand-img center" loading="lazy" style="height: 360px;" src="https://pics.panthera-digital.com/webpage/crafts/metal-rose-painted(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/crafts/metal-rose-painted.webp">
-                                            <img class="expand-img center" loading="lazy" style="height: 360px;" src="https://pics.panthera-digital.com/webpage/crafts/rebar-knife(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/crafts/rebar-knife.webp">
-                                        </div>
-                                    </span>
-                                    
-                                    <br>
-                                    <span class="boxed-list">
-                                        <p><mark>Photography</mark></p>
-                                        <p>
-                                            I appreciate a good landscape view, so I take pictures when I see one.
-                                        </p>
-                                        <div class="img-row">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/beach-view(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/beach-view.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/city-buildings(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/city-buildings.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/city-view(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/city-view.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/cloudy-sky-from-plane(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/cloudy-sky-from-plane.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/forest-pond(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/forest-pond.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/forest-waterfall(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/forest-waterfall.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/hills-dry(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/hills-dry.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/hills-green(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/hills-green.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/night-city-from-plane(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/night-city-from-plane.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/night-city-horizon-from-plane(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/night-city-horizon-from-plane.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/sunset-ocean(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/sunset-ocean.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds.webp">
-                                            <img class="expand-img center" loading="lazy" style="width: 640px;" src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds-2(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds-2.webp">
-                                        </div>
-                                    </span>
-
-                                    <br>
-                                    <span class="boxed-list">
-                                        <p><mark>Gaming</mark></p>
-                                        <p> 
-                                            Some of my favorite games.
-                                        </p>
-                                        <div class="img-row">
-                                            <img title="Warframe" class="expand-img center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/warframe(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/warframe.webp">
-                                            <img title="Skate Story" class="expand-img center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/skate-story(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/skate-story.webp">
-                                            <img title="No Mans Sky" class="expand-img center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/no-mans-sky(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/no-mans-sky.webp">
-                                            <img title="Metal Gear Rising" class="expand-img center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/metal-gear-rising(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/metal-gear-rising.webp">
-                                            <img title="Arc Raiders" class="expand-img center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/arc-raiders(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/arc-raiders.webp">
-                                        </div>
-                                    </span>
-                                </div>
-                                <hr>
-                                <div id="about-contact" name="about-subpage" class="about-subpage" data-topic="Contact & Links">
-                                    <span class="icon envelope"></span> <span style="user-select: all; text-decoration: underline;">pantheradigitalonline@gmail.com</span>
-                                    <br><br><br>
-                                    <a href="https://github.com/PantheraDigital" target="_blank"><span class="icon github"></span> GitHub</a>
-                                    <p>
-                                        View most of my coding projects here. <br>
-                                        Although I created this website to share my projects, on GitHub you can see the code. <br>
-                                        I keep most of my projects public. I only have a select few private repos.
-                                    </p>
-                                    <br>
-                                    <a href="https://codepen.io/PantheraDigital" target="_blank"><span class="icon codepen"></span> CodePen.io</a>
-                                    <p>
-                                        Check out some code snippets for HTML, JS, and CSS. <br>
-                                        I sometimes upload to here reusable elements from my various webpages and designs.
-                                    </p>
-                                    <br>
-                                    <a href="https://pantheradigital.itch.io/" target="_blank"><span class="icon itch-io"></span> Itch.io</a>
-                                    <p>
-                                        Here is the main place to find my game related projects.
-                                    </p>
-                                    <br>
-                                    <a href="https://www.fab.com/sellers/PantheraDigital" target="_blank"><span class="icon unreal"></span> Fab</a>
-                                    <p>
-                                        This market place holds my few paid for game assets (code packs) for Unreal Engine and Unity. <br>
-                                        Back from when I used those engines.
-                                    </p>
-                                </div>
-                            </span>
-                        </div>
-                    </section>
+    <div id="webpage-display">
+    <div id="bg-layer" class="page-layer">
+        <div class="crt3">
+            <div class="gradient-bg abs-fill"></div>
+            <div class="gradient-bg-grid para-x" data-speed="-120"></div>
+            <div class="arch-bg"></div>
+            <div class="noise abs-fill"></div>
+            <div class="abs-fill center-content">
+                <div class="logo-wrapper">
+                    <div class="cloud main-cloud para" data-speed="-100"></div>
+                    <div class="logo-shape-wrapper">
+                        <div class="logo-shape para" data-speed="-70"></div>
+                    </div>
+                    <img class="logo-img para" src="imgs/logo/logo.webp" data-speed="-60"
+                        alt="Panthera's logo depicting a tiger skull over a neon sunset.">
+                    <h1 class="para" data-speed="-70">PANTHERA DIGITAL</h1>
                 </div>
             </div>
-
-            <div id="projects" class="slide-element">
-                <div class="main-block">
-                    <section class="main-content">
-                        <h2 class="page-title underline-title">Projects</h2>
-                        <div id="projects-container" style="margin-left: 5px; margin-right: 5px; flex-grow: 1;">
-                            <!--placeholder-projects-data-->
-                        </div>
-                    </section>
-                </div>
-            </div>
-
-            <div id="articles" class="slide-element">
-                <div class="main-block">
-                    <section class="main-content">
-                        <h2 class="page-title underline-title">Articles</h2>
-                        <div id="articles-container" style="margin-left: 5px; margin-right: 5px; flex-grow: 1;">
-                            <!--placeholder-articles-data-->
-                        </div>
-                    </section>
-                </div>
-            </div>
-
         </div>
     </div>
 
-    <div id="full-img-overlay" class="full-view-img-wrapper hide">
-        <span style="display: inline-block; width: fit-content;">
-            <button style="float: right;" type="button" aria-label="Close">X</button><br>
-            <img id="full-img-overlay-img" class="full-view-img" src="" alt="">
-        </span>
+    <div id="app-layer" class="page-layer">
+        <input type="checkbox" id="display-mode-toggle" class="display-toggle">
+        <label for="display-mode-toggle" class="display-toggle-lable"><span class="sr-only">Toggle dark mode</span></label>
+
+        <nav class="main-grid para" data-speed="-20">
+
+            <div class="grid-cell" style="--column: 0; --row: 0;">
+                <a href="#articles" class="app-icon app-file">
+                    <span class="icon file" aria-hidden="true"><span class="icon pen"></span></span>
+                    <p>Articles</p>
+                </a>
+            </div>
+            <div class="grid-cell" style="--column: 0; --row: 0;">
+                <a href="#projects" class="app-icon app-file">
+                    <span class="icon file" aria-hidden="true"><span class="icon tools"></span></span>
+                    <p>Projects</p>
+                </a>
+            </div>
+            <div class="grid-cell" style="--column: 0; --row: -2;">
+                <a href="#about-digital" class="app-icon app-plate">
+                    <span class="icon id-badge" aria-hidden="true"></span>
+                    <p>Panthera Digital</p>
+                </a>
+            </div>
+            <div class="grid-cell" style="--column: 0; --row: -3;">
+                <a href="#links" class="app-icon app-file">
+                    <span class="icon file" aria-hidden="true"><span class="icon link"></span></span>
+                    <p>Links</p>
+                </a>
+            </div>
+            <div class="grid-cell" style="--column: -1; --row: -2;">
+                <details class="app-folder">
+                    <summary class="app-icon app-folder-icon">
+                        <span class="icon folder" aria-hidden="true"><span class="icon controller"></span></span>
+                        <span>Games</span>
+                    </summary>
+
+                    <div class="folder-content">
+                        <div class="grid-cell" name="game-launch">
+                            <a href="https://itch.io/embed-upload/7941091?color=4f6781" target="_blank" class="app-icon game-icon">
+                                <img src="https://img.itch.zone/aW1nLzEyMjEzNjExLnBuZw==/105x83%23/qt5%2FaT.png" alt="">
+                                <span class="icon play-arrow" aria-hidden="true"></span>
+                                <span class="icon unity" aria-hidden="true"></span>
+                                <p>Entity Controller 2D Demo</p>
+                            </a>
+                        </div>
+                        <div class="grid-cell" name="game-launch">
+                            <a href="https://itch.io/embed-upload/6368440?color=3f6389" target="_blank" class="app-icon game-icon">
+                                <img src="https://img.itch.zone/aW1nLzk3NjE5OTMucG5n/105x83%23/hBUUAu.png" alt="">
+                                <span class="icon play-arrow" aria-hidden="true"></span>
+                                <span class="icon unity" aria-hidden="true"></span>
+                                <p>Demo</p>
+                            </a>
+                        </div>
+                        <div class="grid-cell" name="game-launch">
+                            <a href="https://itch.io/embed-upload/17356390?color=4f6781" target="_blank" class="app-icon game-icon">
+                                <img src="https://img.itch.zone/aW1nLzIyOTg4NDY3LnBuZw==/105x83%23/ZUuPds.png" alt="">
+                                <span class="icon play-arrow" aria-hidden="true"></span>
+                                <span class="icon godot" aria-hidden="true"></span>
+                                <p>Modular Character Controller Demo</p>
+                            </a>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+        </nav>
     </div>
 
-    <svg id="filters" class="hide">
+    <div id="window-layer" class="page-layer remove">
+        
+        <div id="about-digital" class="display-window remove">
+            <div class="button-dock">
+                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+            </div>
+            <section class="main-content">
+                <h2 class="page-title underline-title">About Panthera Digital</h2>
+                <div class="about-body-1">
+                    <div class="profile-head-container">
+                        <div>
+                            <div>
+                                <span class="logo-wrapper" style="--logo-size: 250px">
+                                    <span class="logo-shape-wrapper">
+                                        <span class="logo-shape"></span>
+                                    </span>
+                                    <img class="logo-img" src="imgs/logo/logo.webp" loading="lazy" alt="Panthera's logo depicting a tiger skull over a neon sunset.">
+                                </span>
+                            </div>
+                            <div>
+                                <span class="icon envelope" aria-hidden="true"></span> <span class="select-text">pantheradigitalonline@gmail.com</span>
+                            </div>
+                        </div>
+                        <div class="profile-head-text">
+                            <p class="large-text">I am <i>Panthera</i> and I like to solve problems. Software provides endless problems.</p>
+                        </div>
+                    </div>
+                    <div class="profile-body">
+                        <div class="boxed-list">
+                            <h3><mark>Education</mark></h3>
+                            <ul>
+                                <li>BS CS - <i>2026</i></li>
+                                <li>Cybersecurity Certificate - <i>in progress</i></li>
+                            </ul>
+                        </div>
+
+                        <br>
+                        <div class="boxed-list">
+                            <h3><mark>Programming Languages</mark></h3>
+                            <ul class="h-list">
+                                <li>C++</li>
+                                <li>C#</li>
+                                <li>Python</li>
+                                <li>JS</li>
+                                <li>GD Script</li>
+                            </ul>
+                        </div>
+                        
+                        <br>
+                        <div class="boxed-list">
+                            <h3><mark>Areas of Interest</mark></h3>
+                            <ul>
+                                <li>Game Development - <i>gameplay programming</i></li>
+                                <li>Web Development - <i>frontend, backend, cloud</i></li>
+                                <li>Cybersecurity - <i>blue team</i></li>
+                            </ul>
+                        </div>
+                        
+                        <br>
+                        <div class="boxed-list">
+                            <h3><mark>Game Engines</mark></h3>
+                            <ul class="h-list">
+                                <li>Unity v2019</li>
+                                <li>UE 5</li>
+                                <li>Godot 4</li>
+                            </ul>
+                        </div>
+                        
+                        <br>
+                        <div class="boxed-list">
+                            <h3><mark>Quick Facts</mark></h3>
+                            <ul>
+                                <li>Built my own PC in 2017, still in use.</li>
+                                <li>Switched from Windows to Linux in 2024.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-body-2">
+                    <p class="large-text">
+                        Outside of the digital space I've explored other forms of creative work.
+                    </p>
+
+                    <br>
+                    <div class="boxed-list">
+                        <h3><mark>Crafting</mark></h3>
+                        <ul>
+                            <li>metal roses from sheet metal</li>
+                            <li>bits of wood working</li>
+                            <li>explored welding in high school</li>
+                            <li>built a forge for a summer in an attempt to make knives from rebar</li>
+                        </ul>
+                        <div class="img-row">
+                            <img class="expand-img small v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/crafts/metal-roses(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/crafts/metal-roses.webp" alt="Roses made of thin sheet metal sitting on a wood log">
+                            <img class="expand-img small v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/crafts/metal-rose-painted(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/crafts/metal-rose-painted.webp" alt="Rose made of thin sheet metal painted red with black edges">
+                            <img class="expand-img small v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/crafts/rebar-knife(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/crafts/rebar-knife.webp" alt="Rusty rebar being formed into a knife shapre on an anvil">
+                        </div>
+                    </div>
+                    
+                    <br>
+                    <div class="boxed-list">
+                        <h3><mark>Photography</mark></h3>
+                        <p>
+                            I appreciate a good landscape view, so I take pictures when I see one.
+                        </p>
+                        <div class="img-row">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/beach-view(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/beach-view.webp" alt="Over cast beach with a city skyline in the distance">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/city-buildings(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/city-buildings.webp" alt="Tall modern buildings in the distance with a prominent older and ornate building in the foreground">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/city-view(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/city-view.webp" alt="Green bushes in the foreground overlooking a city skyline on an overcast day">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/cloudy-sky-from-plane(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/cloudy-sky-from-plane.webp" alt="Clouds across a blue sky from the view of a plane">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/forest-pond(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/forest-pond.webp" alt="A small pond sitting in a lush green clearing within a forest with rocky mountains in the background">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/forest-waterfall(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/forest-waterfall.webp" alt="Tall redwood trees with a clearing exposing a massive mountain in the distance with a thin waterfall pouring down">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/hills-dry(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/hills-dry.webp" alt="Brown hilly fields with a few cows grazing surrounded by sparcely placed green trees">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/hills-green(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/hills-green.webp" alt="A high vantage point overlooking brown rolling hills with patches of green bushes and trees fading into the blue sky">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/night-city-from-plane(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/night-city-from-plane.webp" alt="Overhead view of the lights from a city at night from a plane">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/night-city-horizon-from-plane(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/night-city-horizon-from-plane.webp" alt="City lights at night from the view of a plane with the wing of the plane comming into view">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/sunset-ocean(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/sunset-ocean.webp" alt="Calm ocean waves along a beach while the sun shines through a cloudy day nearing sunset">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds.webp" alt="Sunset in a neighborhood lighting the clouds pink and grey">
+                            <img class="expand-img med v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds-2(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/landscape/sunset-pink-clouds-2.webp" alt="A blue sky with pink clouds durring sunset with a line of trees and street lights near the bottom of the picture and the moon visible in the sky">
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="boxed-list">
+                        <h3><mark>Gaming</mark></h3>
+                        <p> 
+                            Some of my favorite games.
+                        </p>
+                        <div class="img-row">
+                            <img title="Warframe" class="expand-img v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/warframe(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/warframe.webp" alt="Promo image for Warframe">
+                            <img title="Skate Story" class="expand-img v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/skate-story(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/skate-story.webp" alt="Promo image for Skate Story">
+                            <img title="No Mans Sky" class="expand-img v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/no-mans-sky(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/no-mans-sky.webp" alt="Promo image for No Mans Sky">
+                            <img title="Metal Gear Rising" class="expand-img v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/metal-gear-rising(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/metal-gear-rising.webp" alt="Promo image for Metal Gear Rising: Revengeance">
+                            <img title="Arc Raiders" class="expand-img v-center" loading="lazy" src="https://pics.panthera-digital.com/webpage/5-games/arc-raiders(small).webp" data-high-res-src="https://pics.panthera-digital.com/webpage/5-games/arc-raiders.webp" alt="Promo image for Arc Raiders">
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="links" class="display-window remove">
+            <div class="button-dock">
+                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+            </div>
+            <section class="main-content">
+                <h2 class="page-title underline-title">Links</h2>
+                <div class="entry-container">
+                    <span class="icon envelope"></span> <span class="select-text">pantheradigitalonline@gmail.com</span>
+                    <br><br><br>
+                    <a href="https://github.com/PantheraDigital" target="_blank"><span class="icon github" aria-hidden="true"></span> GitHub</a>
+                    <p>
+                        View most of my coding projects here. <br>
+                        Although I created this website to share my projects, on GitHub you can see the code. <br>
+                        I keep most of my projects public. I only have a select few private repos.
+                    </p>
+                    <br>
+                    <a href="https://codepen.io/PantheraDigital" target="_blank"><span class="icon codepen" aria-hidden="true"></span> CodePen.io</a>
+                    <p>
+                        Check out some code snippets for HTML, JS, and CSS. <br>
+                        I sometimes upload to here reusable elements from my various webpages and designs.
+                    </p>
+                    <br>
+                    <a href="https://pantheradigital.itch.io/" target="_blank"><span class="icon itch-io" aria-hidden="true"></span> Itch.io</a>
+                    <p>
+                        Here is the main place to find my game related projects.
+                    </p>
+                    <br>
+                    <a href="https://www.fab.com/sellers/PantheraDigital" target="_blank"><span class="icon unreal" aria-hidden="true"></span> Fab</a>
+                    <p>
+                        This market place holds my few paid for game assets (code packs) for Unreal Engine and Unity. <br>
+                        Back from when I used those engines.
+                    </p>
+                </div>
+            </section>
+        </div>
+
+        <div id="projects" class="display-window remove">
+            <div class="button-dock">
+                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+            </div>
+            <section class="main-content">
+                <h2 class="page-title underline-title">Projects</h2>
+                <div id="projects-container" class="entry-container">
+                    <!--placeholder-projects-data-->
+                </div>
+            </section>
+        </div>
+
+        <div id="articles" class="display-window remove">
+            <div class="button-dock">
+                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+            </div>
+            <section class="main-content">
+                <h2 class="page-title underline-title">Articles</h2>
+                <div id="articles-container" class="entry-container">
+                    <!--placeholder-articles-data-->
+                </div>
+            </section>
+        </div>
+            
+    </div>
+
+    <div id="full-img-overlay" class="full-view-img-wrapper remove">
+        <div>
+            <button type="button" aria-label="Close image"><span aria-hidden="true">X</span></button><br>
+            <img id="full-img-overlay-img" class="full-view-img" src="" alt="">
+        </div>
+    </div>
+
+    <svg id="filters" class="hide" aria-hidden="true">
         <filter id='noiseFilter'>
             <feturbulence id="turbulence" type='fractalNoise' baseFrequency='0.0025' numOctaves='4' seed="1" />
         </filter>
@@ -276,6 +345,13 @@
             <fedisplacementmap in="SourceGraphic" scale="120" />
         </filter>
     </svg>
+    </div>
+
+
+    <div id="game-display" class="page-layer remove">
+        <button id="close-game-display" type="button" aria-label="Close game"><span aria-hidden="true">X</span></button>
+        <div id="game-container" class="fill"></div>
+    </div>
 
 
     <script src="script.js"></script>
