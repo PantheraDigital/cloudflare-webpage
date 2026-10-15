@@ -960,7 +960,7 @@ img.v-center {
 }
 
 .boxed-list h3 {
-  margin: 0;
+  margin: 0 0 10px 0;
   font-weight: normal;
 }
 .boxed-list mark {
