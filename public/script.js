@@ -268,5 +268,18 @@ function initPage() {
         webpageDisplay.classList.remove("remove");
         while(gameContainer.firstChild) gameContainer.firstChild.remove();
     });
+
+    // hover game folder
+    if (hasHover) {
+        const gameFolder = document.querySelector("#game-cell .app-folder");
+
+        gameFolder.addEventListener('mouseenter', () => {
+            gameFolder.open = true;
+        });
+
+        gameFolder.addEventListener('mouseleave', () => {
+            gameFolder.open = false;
+        });
+    }
 }
 initPage();

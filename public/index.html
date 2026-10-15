@@ -96,29 +96,47 @@
                     </summary>
 
                     <div class="folder-content">
-                        <div class="grid-cell" name="game-launch">
-                            <a href="https://itch.io/embed-upload/7941091?color=4f6781" target="_blank" class="app-icon game-icon">
-                                <img src="https://img.itch.zone/aW1nLzEyMjEzNjExLnBuZw==/105x83%23/qt5%2FaT.png" alt="">
-                                <span class="icon play-arrow" aria-hidden="true"></span>
-                                <span class="icon unity" aria-hidden="true"></span>
+                        <div tabindex="0" class="grid-cell game-cell app-icon">
+                            <img src="https://img.itch.zone/aW1nLzEyMjEzNjExLnBuZw==/105x83%23/qt5%2FaT.png" alt="">
+                            <div class="game-overlay">
+                                <span class="icon arrow-down tail" aria-hidden="true"></span>
+                                <span class="icon unity top-right" aria-label="Made with Unity" title="Made with Unity"></span>
+                                <a href="https://pantheradigital.itch.io/entity-controller-demo" target="_blank" aria-label="Go to page" title="Go to page">
+                                    <span class="icon link bottom-left" aria-hidden="true"></span>
+                                </a>
+                                <a href="https://itch.io/embed-upload/7941091?color=4f6781" target="_blank" aria-label="Play game" title="Play game">
+                                    <span class="icon play-arrow bottom-right" aria-hidden="true"></span>
+                                </a>
                                 <p>Entity Controller 2D Demo</p>
-                            </a>
+                            </div>
                         </div>
-                        <div class="grid-cell" name="game-launch">
-                            <a href="https://itch.io/embed-upload/6368440?color=3f6389" target="_blank" class="app-icon game-icon">
-                                <img src="https://img.itch.zone/aW1nLzk3NjE5OTMucG5n/105x83%23/hBUUAu.png" alt="">
-                                <span class="icon play-arrow" aria-hidden="true"></span>
-                                <span class="icon unity" aria-hidden="true"></span>
-                                <p>Demo</p>
-                            </a>
+                        <div tabindex="0" class="grid-cell game-cell app-icon">
+                            <img src="https://img.itch.zone/aW1nLzk3NjE5OTMucG5n/105x83%23/hBUUAu.png" alt="">
+                            <div class="game-overlay">
+                                <span class="icon arrow-down tail" aria-hidden="true"></span>
+                                <span class="icon unity top-right" aria-label="Made with Unity" title="Made with Unity"></span>
+                                <a href="https://pantheradigital.itch.io/demo" target="_blank" aria-label="Go to page" title="Go to page">
+                                    <span class="icon link bottom-left" aria-hidden="true"></span>
+                                </a>
+                                <a href="https://itch.io/embed-upload/6368440?color=3f6389" target="_blank" aria-label="Play game" title="Play game">
+                                    <span class="icon play-arrow bottom-right" aria-hidden="true"></span>
+                                </a>
+                                <p>Unnamed Demo</p>
+                            </div>
                         </div>
-                        <div class="grid-cell" name="game-launch">
-                            <a href="https://itch.io/embed-upload/17356390?color=4f6781" target="_blank" class="app-icon game-icon">
-                                <img src="https://img.itch.zone/aW1nLzIyOTg4NDY3LnBuZw==/105x83%23/ZUuPds.png" alt="">
-                                <span class="icon play-arrow" aria-hidden="true"></span>
-                                <span class="icon godot" aria-hidden="true"></span>
+                        <div tabindex="0" class="grid-cell game-cell app-icon">
+                            <img src="https://img.itch.zone/aW1nLzIyOTg4NDY3LnBuZw==/105x83%23/ZUuPds.png" alt="">
+                            <div class="game-overlay">
+                                <span class="icon arrow-down tail" aria-hidden="true"></span>
+                                <span class="icon godot top-right" aria-label="Made with Godot" title="Made with Godot"></span>
+                                <a href="https://pantheradigital.itch.io/godot-modular-character-controller" target="_blank" aria-label="Go to page" title="Go to page">
+                                    <span class="icon link bottom-left" aria-hidden="true"></span>
+                                </a>
+                                <a href="https://itch.io/embed-upload/17356390?color=4f6781" target="_blank" aria-label="Play game" title="Play game">
+                                    <span class="icon play-arrow bottom-right" aria-hidden="true"></span>
+                                </a>
                                 <p>Modular Character Controller Demo</p>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </details>
@@ -130,11 +148,11 @@
     <div id="window-layer" class="page-layer remove">
         
         <div id="about-digital" class="display-window remove">
-            <div class="button-dock">
-                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
-            </div>
             <section class="main-content">
-                <h2 class="page-title underline-title">About Panthera Digital</h2>
+                <div class="content-head">                    
+                    <button type="button" class="display-window-button close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+                    <h2 class="page-title underline-title">About Panthera Digital</h2>
+                </div>
                 <div class="about-body-1">
                     <div class="profile-head-container">
                         <div>
@@ -268,11 +286,11 @@
         </div>
 
         <div id="links" class="display-window remove">
-            <div class="button-dock">
-                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
-            </div>
             <section class="main-content">
-                <h2 class="page-title underline-title">Links</h2>
+                <div class="content-head">                    
+                    <button type="button" class="display-window-button close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+                    <h2 class="page-title underline-title">Links</h2>
+                </div>
                 <div class="entry-container">
                     <span class="icon envelope"></span> <span class="select-text">pantheradigitalonline@gmail.com</span>
                     <br><br><br>
@@ -304,11 +322,11 @@
         </div>
 
         <div id="projects" class="display-window remove">
-            <div class="button-dock">
-                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
-            </div>
             <section class="main-content">
-                <h2 class="page-title underline-title">Projects</h2>
+                <div class="content-head">                    
+                    <button type="button" class="display-window-button close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+                    <h2 class="page-title underline-title">Projects</h2>
+                </div>
                 <div id="projects-container" class="entry-container">
                     <!--placeholder-projects-data-->
                 </div>
@@ -316,11 +334,11 @@
         </div>
 
         <div id="articles" class="display-window remove">
-            <div class="button-dock">
-                <button type="button" class="close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
-            </div>
             <section class="main-content">
-                <h2 class="page-title underline-title">Articles</h2>
+                <div class="content-head">                    
+                    <button type="button" class="display-window-button close-display-window" aria-label="Close display window"><span aria-hidden="true">X</span></button>
+                    <h2 class="page-title underline-title">Articles</h2>
+                </div>
                 <div id="articles-container" class="entry-container">
                     <!--placeholder-articles-data-->
                 </div>
