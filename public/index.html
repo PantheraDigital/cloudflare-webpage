@@ -36,28 +36,27 @@
         </div>
     </template>
 
+
     <div id="webpage-display">
-    <div id="bg-layer" class="page-layer">
-        <div class="crt3">
-            <div class="gradient-bg abs-fill"></div>
-            <div class="gradient-bg-grid para-x" data-speed="-120"></div>
-            <div class="arch-bg"></div>
-            <div class="noise abs-fill"></div>
-            <div class="abs-fill center-content">
-                <div class="logo-wrapper">
-                    <div class="cloud main-cloud para" data-speed="-100"></div>
-                    <div class="logo-shape-wrapper">
-                        <div class="logo-shape para" data-speed="-70"></div>
-                    </div>
-                    <img class="logo-img para" src="imgs/logo/logo.webp" data-speed="-60"
-                        alt="Panthera's logo depicting a tiger skull over a neon sunset.">
-                    <h1 class="para" data-speed="-70">PANTHERA DIGITAL</h1>
+    <div id="bg-layer" class="page-layer crt3">
+        <div class="gradient-bg abs-fill opacity-0" name="on-load-fade-in" data-fade-in="1000"></div>
+        <div class="gradient-bg-grid para-x opacity-0" data-speed="-120" name="on-load-fade-in" data-fade-in="1500"></div>
+        <div class="arch-bg opacity-0" name="on-load-fade-in" data-fade-in="1500"></div>
+        <div class="noise abs-fill" ></div>
+        <div class="abs-fill center-content" name="on-load-fade-in" data-fade-in="0">
+            <div class="logo-wrapper">
+                <div class="cloud main-cloud para opacity-0" data-speed="-100" name="on-load-fade-in" data-fade-in="2000"></div>
+                <div class="logo-shape-wrapper">
+                    <div class="logo-shape anim para" data-speed="-70"></div>
                 </div>
+                <img class="logo-img para" src="imgs/logo/logo.webp" data-speed="-60"
+                    alt="Panthera's logo depicting a tiger skull over a neon sunset.">
+                <h1 class="website-title para" data-speed="-70">PANTHERA DIGITAL</h1>
             </div>
         </div>
     </div>
 
-    <div id="app-layer" class="page-layer">
+    <div id="app-layer" class="page-layer opacity-0" name="on-load-fade-in" data-fade-in="2500">
         <input type="checkbox" id="display-mode-toggle" class="display-toggle">
         <label for="display-mode-toggle" class="display-toggle-lable"><span class="sr-only">Toggle dark mode</span></label>
 
@@ -92,7 +91,7 @@
                 <details class="app-folder">
                     <summary class="app-icon app-folder-icon">
                         <span class="icon folder" aria-hidden="true"><span class="icon controller"></span></span>
-                        <span>Games</span>
+                        <p>Games</p>
                     </summary>
 
                     <div class="folder-content">
@@ -349,8 +348,8 @@
 
     <div id="full-img-overlay" class="full-view-img-wrapper remove">
         <div>
-            <button type="button" aria-label="Close image"><span aria-hidden="true">X</span></button><br>
             <img id="full-img-overlay-img" class="full-view-img" src="" alt="">
+            <button type="button" aria-label="Close image"><span aria-hidden="true">X</span></button>
         </div>
     </div>
 

@@ -136,6 +136,32 @@ function sortEntriesByIndex(a, b) {
 
 
 function initPage() {
+    // load anim
+    const fadeIns = document.querySelectorAll("[name='on-load-fade-in']");
+    for (const fadeIn of fadeIns) {
+        if (!fadeIn.classList.contains("opacity-0")) {
+            fadeIn.classList.add("fade-in");
+        }
+    }
+    window.addEventListener("load", (event) => {
+        for (const fadeIn of fadeIns) {
+            const delay = parseInt(fadeIn.getAttribute("data-fade-in"));
+            setTimeout(() => {
+                if (fadeIn.classList.contains("opacity-0")) {
+                    fadeIn.classList.add("zero-100");
+                    fadeIn.addEventListener("transitionend", () => {
+                        fadeIn.classList.remove("opacity-0", "zero-100");
+                    });
+                } else {
+                    fadeIn.classList.add("fade");
+                    fadeIn.addEventListener("transitionend", () => {
+                        fadeIn.classList.remove("fade-in", "fade");
+                    });
+                }
+                }, delay);
+        }
+    });
+
     // pre set light/dark
     document.getElementById("display-mode-toggle").checked = window.matchMedia('(prefers-color-scheme: dark)').matches;
     
@@ -190,7 +216,10 @@ function initPage() {
             }
         });
     });
-    imgOverlay.addEventListener("click", (event) => imgOverlay.classList.add("remove"));
+    imgOverlay.addEventListener("click", (event) => {
+        event.stopPropagation();
+        imgOverlay.classList.add("remove");
+    });
     imgOverlayImg.addEventListener("click", (event) => event.stopPropagation());
 
     // paralax
@@ -227,6 +256,8 @@ function initPage() {
 
     // display windows
     const appLayer = document.getElementById("app-layer");
+    let openWindow = undefined;
+
     document.querySelectorAll(".close-display-window").forEach((element) => {
         element.addEventListener("click", (event) => {
             const displayWindow = event.currentTarget.closest(".display-window");
@@ -235,9 +266,21 @@ function initPage() {
             appLayer.querySelectorAll("a, button, input").forEach((element) => {
                 element.removeAttribute("tabindex");
             });
+            openWindow = undefined;
 
             if (hasHover) updateParaLayers(paraList, paraXList, mouseX, mouseY);
         });
+    });
+    document.addEventListener("click", (event) => {
+        if (openWindow !== undefined && (openWindow === event.target || !openWindow.contains(event.target))) {
+            const displayWindow = openWindow;
+            displayWindow.classList.add("remove");
+            displayWindow.parentElement.classList.add("remove");
+            appLayer.querySelectorAll("a, button, input").forEach((element) => {
+                element.removeAttribute("tabindex");
+            });
+            openWindow = undefined;
+        }
     });
 
     document.querySelectorAll(".main-grid .app-icon").forEach((element) => {
@@ -248,11 +291,14 @@ function initPage() {
             if (!displayWindow) return;
 
             event.preventDefault();
+            event.stopPropagation();
+
             displayWindow.classList.remove("remove");
             displayWindow.parentElement.classList.remove("remove");
             appLayer.querySelectorAll("a, button, input").forEach((element) => {
                 element.setAttribute("tabindex", "-1");
             });
+            openWindow = displayWindow;
         });
     });
 
@@ -266,13 +312,12 @@ function initPage() {
     closeGameDisplayBtn.addEventListener("click", (event) => {
         gameDisplay.classList.add("remove");
         webpageDisplay.classList.remove("remove");
-        while(gameContainer.firstChild) gameContainer.firstChild.remove();
+        while(gameContainer.firstElementChild) gameContainer.firstElementChild.remove();
     });
 
-    // hover game folder
+    // game folder
+    const gameFolder = document.querySelector("#game-cell .app-folder");
     if (hasHover) {
-        const gameFolder = document.querySelector("#game-cell .app-folder");
-
         gameFolder.addEventListener('mouseenter', () => {
             gameFolder.open = true;
         });
@@ -280,6 +325,11 @@ function initPage() {
         gameFolder.addEventListener('mouseleave', () => {
             gameFolder.open = false;
         });
-    }
+    };
+    document.addEventListener("click", (event) => {
+        if (event.target !== gameFolder && !gameFolder.contains(event.target) && gameFolder.open) {
+            gameFolder.open = false;
+        }
+    });
 }
 initPage();
