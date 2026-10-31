@@ -1,15 +1,10 @@
 {
   "name": "cloudflare-webpage",
   "main": "./scripts/index.js",
-  "compatibility_date": "2026-08-29",
+  "compatibility_date": "2026-10-31",
   "keep_vars": true,
   "observability": {
     "enabled": true
-  },
-  "secrets": {
-    "required": [
-      "INTERNAL_API_KEY"
-    ]
   },
   "assets": {
     "directory": "./public",

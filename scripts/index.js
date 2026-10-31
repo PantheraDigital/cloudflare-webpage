@@ -2,7 +2,6 @@
     HTML_KV - full page and entry snippets
     POST_PREFIX - post entry key prefix
     PROJECT_PREFIX - project entry key prefix
-    INTERNAL_API_KEY - key to locked services
 */
 import { WorkerEntrypoint } from "cloudflare:workers";
 import projectTemplate from "../templates/project-template.html";
@@ -346,41 +345,7 @@ export default class extends WorkerEntrypoint {
     async fetch(request) {
         const url = new URL(request.url);
 
-        if (request.method === "POST") {
-            /*if (url.pathname !== "/admin/force-render") {
-                return new Response("Not Found", { status: 404 });
-            }
-
-            const authRes = authenticate(request, this.env.INTERNAL_API_KEY);
-            if (!authRes.response.ok) {
-                return authRes.response;
-            }
-
-            try {
-                await this.render();
-                return new Response("Render success", { status: 200 });
-            } catch (error) {
-                console.error("Render failure:", error.message);
-                return new Response(`Render failure: ${error.message}`, { status: 500 });
-            }*/
-
-        } else if (request.method === "GET") {
-            if (url.pathname === "/admin") {
-                const authRes = authenticate(request, this.env.INTERNAL_API_KEY);
-                if (!authRes.response.ok) {
-                    return authRes.response;
-                }
-
-                try {
-                    console.log(`[ACTION] ${authRes.username} - ${request.method} ${url.pathname}`);
-                    return this.env.ASSETS.fetch(request);
-
-                } catch(error) {
-                    console.error(error.message);
-                    return new Response("Internal Server Error", { status: 500 });
-                }
-            }
-
+        if (request.method === "GET") {
             if (url.pathname !== "/" && url.pathname !== "/index.html") {
                 return this.env.ASSETS.fetch(request);
             }
@@ -408,7 +373,6 @@ export default class extends WorkerEntrypoint {
             return new Response("Render success", { status: 200 });
         } catch (error) {
             console.error("Render failure:", error.message);
-            //throw new Error(`Render failure: ${error.message}`, { cause: error });
             return new Response(`Render failure: ${error.message}`, { status: 500 });
         }
     }
