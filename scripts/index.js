@@ -347,7 +347,7 @@ export default class extends WorkerEntrypoint {
         const url = new URL(request.url);
 
         if (request.method === "POST") {
-            if (url.pathname !== "/admin/force-render") {
+            /*if (url.pathname !== "/admin/force-render") {
                 return new Response("Not Found", { status: 404 });
             }
 
@@ -362,7 +362,7 @@ export default class extends WorkerEntrypoint {
             } catch (error) {
                 console.error("Render failure:", error.message);
                 return new Response(`Render failure: ${error.message}`, { status: 500 });
-            }
+            }*/
 
         } else if (request.method === "GET") {
             if (url.pathname === "/admin") {
@@ -405,9 +405,11 @@ export default class extends WorkerEntrypoint {
                 .catch(err => console.error("Failed to save render to KV:", err));
 
             console.log("Render success");
+            return new Response("Render success", { status: 200 });
         } catch (error) {
             console.error("Render failure:", error.message);
-            throw new Error(`Render failure: ${error.message}`, { cause: error });
+            //throw new Error(`Render failure: ${error.message}`, { cause: error });
+            return new Response(`Render failure: ${error.message}`, { status: 500 });
         }
     }
 };
