@@ -16,9 +16,8 @@
   --bg-gradient: radial-gradient(190% 50% at 0% 45%, #f3e78b 0%, pink 16.66%, lavenderblush 49.98%, lavender 66.64%, cornflowerblue 99.96%);
 
   --cloud-shadow: 
-    400px 440px 30px -90px rgba(0, 0, 0, 0.08),
-    400px 420px 40px -50px rgba(66, 105, 146, 0.1),
-    400px 410px 30px -15px rgba(215, 215, 215, 0.2),
+    400px 420px 40px -50px rgba(66, 105, 146, 0.25),
+    400px 410px 30px -15px rgba(215, 215, 215, 0.3),
     400px 400px 15px -0px rgba(255, 255, 255, 0.9),
     400px 400px 25px 5px lavenderblush,
     400px 400px 40px 10px rgba(0, 0, 0, 0.1);
@@ -49,9 +48,8 @@
     radial-gradient(200% 20% at 50% 25%, cyan 20%, black 100%);
 
   --cloud-shadow: 
-    400px 440px 30px -90px rgba(0, 0, 0, 0.08),
-    400px 420px 40px -50px rgba(66, 105, 146, 0.1),
-    400px 410px 30px -15px rgba(215, 215, 215, 0.2),
+    400px 420px 40px -50px rgba(66, 105, 146, 0.25),
+    400px 410px 30px -15px rgba(215, 215, 215, 0.3),
     400px 400px 15px -0px rgba(255, 255, 255, 0.9),
     400px 400px 25px 5px rgb(13, 13, 248),
     400px 400px 40px 10px rgba(0, 0, 0, 0.1);
@@ -502,6 +500,7 @@ img.v-center {
 }
 
 .main-grid {
+  pointer-events: none;
   display: grid;
   box-sizing: border-box;
   margin: 20px auto;
@@ -517,6 +516,7 @@ img.v-center {
 .grid-cell {
   --column: 0;
   --row: 0;
+  pointer-events: auto;
   width: 100px;
   height: 100px;
   grid-column: var(--column); 
@@ -821,9 +821,9 @@ img.v-center {
 .main-cloud {
   position: absolute;
   left: calc((80vw / 2) * -1 + 50%);
-  top: 25%;
+  top: 26%;
   width: 80vw;
-  height: 200px;
+  height: 150px;
 }
 
 .cloud::before {
@@ -836,6 +836,14 @@ img.v-center {
   border-radius: 40%;
   filter: url(#cloud-filter);
   box-shadow: var(--cloud-shadow);
+}
+
+@media (max-width: 750px) {
+  .main-cloud {
+    height: 150px;
+    width: 120vw;
+    left: calc((120vw / 2) * -1 + 50%);
+  }
 }
 
 /*** windows ***/
@@ -961,14 +969,14 @@ img.v-center {
 }
 
 .entry-container {
-    margin-left: 5px; margin-right: 5px; flex-grow: 1;
+  margin-left: 5px; margin-right: 5px; flex-grow: 1;
 }
 
 .about-body-1 {
-    margin: 0 5px 5px 5px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px;
+  margin: 0 5px 5px 5px; flex-grow: 1; display: flex; flex-direction: column; gap: 10px;
 }
 .profile-head-container {
-    display: flex; gap: 10px;
+  display: flex; gap: 10px;
 }
 @media (max-width: 500px) {
 .profile-head-container {
@@ -976,13 +984,13 @@ img.v-center {
 }
 }
 .profile-head-text {
-    background-color: var(--slide-bg-sec); padding: 10px; box-shadow: 0 0 3px 2px var(--slide-bg-sec);
+  background-color: var(--slide-bg-sec); padding: 10px; box-shadow: 0 0 3px 2px var(--slide-bg-sec);
 }
 .profile-body {
-    background-color: var(--slide-bg-sec); box-shadow: 0 0 3px 2px var(--slide-bg-sec); flex-grow: 1; padding: 10px; margin-top: 10px;
+  background-color: var(--slide-bg-sec); box-shadow: 0 0 3px 2px var(--slide-bg-sec); flex-grow: 1; padding: 10px; margin-top: 10px;
 }
 .about-body-2 {
-    position: relative; margin: 10px 5px; background-color: var(--slide-bg-sec); box-shadow: 0 0 3px 2px var(--slide-bg-sec); padding: 10px;
+  position: relative; margin: 10px 5px; background-color: var(--slide-bg-sec); box-shadow: 0 0 3px 2px var(--slide-bg-sec); padding: 10px;
 }
 
 .boxed-list {
@@ -1009,8 +1017,8 @@ img.v-center {
 }
 
 .select-text {
-    user-select: all; 
-    text-decoration: underline;
+  user-select: all; 
+  text-decoration: underline;
 }
 
 /***  Projects / Articles  ***/
